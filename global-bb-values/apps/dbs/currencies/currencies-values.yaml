@@ -1,0 +1,11 @@
+service:
+    nameOverride: "currencies"
+app:
+  image:
+    repository: ados-dbs-currencies-service
+  resources:
+    memory:
+      ram: 1024
+
+database:
+  enabled: false

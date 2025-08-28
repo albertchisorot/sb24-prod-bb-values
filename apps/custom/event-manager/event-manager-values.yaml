@@ -1,0 +1,22 @@
+app:
+  image:
+    tag: 1.0.0-RC
+
+javaOpts:
+  extra:
+    - "-Djavax.net.ssl.trustStore=/etc/ssl/java/certs/cacerts"
+    - "-Djavax.net.ssl.trustStorePassword=changeit"
+
+volumes:
+  - name: sba-jks-configmap
+    configMap:
+      name: sba-jks-configmap
+volumeMounts:
+  - name: sba-jks-configmap
+    mountPath: /etc/ssl/java/certs/cacerts
+    subPath: cacerts
+    readOnly: true
+
+env:
+  logging.level.org.springframework.web.client.RestTemplate: "DEBUG"
+  logging.level.ao.co.standardbank: "DEBUG"

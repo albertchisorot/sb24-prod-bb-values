@@ -1,0 +1,148 @@
+global:
+
+  jwt:
+    enabled: true
+    existingSecret: "backbase-env-jwt"
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+
+  activemq:
+    enabled: true
+    checkEnabled: true
+
+  database:
+    enabled: true
+    checkEnabled: true
+
+  #don´t exist in new halm chart, but exist in old halm chart
+  registry:
+    enabled: false
+
+  app:
+    image:
+      repository: contentservices
+
+  #don´t exist in new halm chart, but exist in old halm chart
+  rbac:
+    create: false
+
+
+replicaCount: 1
+
+javaOpts:
+  extra:
+    - "-Dspring.config.additional-location="
+
+app:
+  metadata: { tier: "cxs", public: "true", capability: "contentservices" }
+  resources:
+    memory:
+      ram: 2048
+    cpu:
+      minShares: 100
+      maxShares: 3000
+
+customFilesPath: "/conf/"
+
+customFiles:
+  # -- contentservices.customFile application-kubernetes.yml file content configured
+  application-kubernetes.yml: |-
+    # spring configuration
+    spring:
+      # spring auto configurer
+      autoconfigure: # Excludes some spring-autoconfiguration classes in order to use kubernetes native registry.
+        # Excludes some spring-autoconfiguration classes in order to use kubernetes native registry.
+        exclude: org.springframework.cloud.function.context.config.ContextFunctionCatalogAutoConfiguration,org.springframework.cloud.netflix.eureka.loadbalancer.LoadBalancerEurekaAutoConfiguration
+      # spring cloud settings
+      cloud:
+        # k8s properties
+        kubernetes:
+          # Enable usage of kubernetes registry by default.
+          enabled: true
+          # reload option
+          reload:
+            # reload option enabled bydefault
+            enable: true
+        # Disables ribbon load balancer.
+        loadbalancer:
+          # ribbon LB
+          ribbon:
+              # disabled usage of ribbon load balancer
+            enabled: false
+    # Eureka client config
+    eureka:
+      # eureka client settings
+      client:
+        # Disables eureka client by default.
+        enabled: false # Disables eureka client by default.
+    # Logging configuration
+    # logging level settings
+    logging:
+      # pkg structure of module
+      level:
+        # pkg structure of module
+        com:
+          #pkg structure of module
+          backbase:
+            #pkg structure of module
+            portal:
+              # contentservices log level
+              contentservices: WARN # Application logging level is default to WARN
+    # content services configuration
+    contentservices:
+      # auditing settings
+      auditing:
+        # Auditing events are disabled by default.
+        enabled: false
+      # provisioning settings
+      provisioning:
+        # Provisioning is enabled by default.
+        enabled: true
+      # extension-points settings
+      extension-points:
+        # Extension points are enabled by default.
+        enabled: true
+    # space-controller settings
+    space-controller:
+        # Space-controller is disabled for this setup
+        enabled: false
+
+database:
+  sid:
+
+service:
+  enabled: true
+  nameOverride: "contentservices"
+  type: "ClusterIP"
+  port: 8080
+  portName: "http"
+  targetPort: "http"
+
+livenessProbe:
+  enabled: true
+  port: "http"
+  initialDelaySeconds: 120
+  failureThreshold: 6
+  periodSeconds: 30
+  timeoutSeconds: 5
+  path: /actuator/health
+
+readinessProbe:
+  enabled: true
+  port: "http"
+  initialDelaySeconds: 120
+  failureThreshold: 6
+  periodSeconds: 30
+  timeoutSeconds: 5
+  path: /actuator/health
+
+# don´t exist in new halm chart, but exist in old halm chart
+persistence:
+  enabled: false
+  size: 2Gi
+  mountPath: /opt/backbase
+  accessMode: ReadWriteOnce
+
+# don´t exist in new halm chart, but exist in old halm chart
+env:
+  SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: "org.hibernate.dialect.Oracle12cDialect"

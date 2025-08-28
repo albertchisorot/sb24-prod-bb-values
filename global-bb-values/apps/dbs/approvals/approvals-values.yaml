@@ -1,0 +1,24 @@
+service:
+  nameOverride: "approval-service"
+
+app:
+  image:
+    repository: approval-service
+
+database:
+  enabled: true
+
+activemq:
+  enabled: true
+  checkEnabled: true
+
+jwt:
+  enabled: true
+  SIG_SECRET_KEY_fromSecret: true
+  USERCTX_KEY_fromSecret: true
+
+env:
+  SPRING_LIQUIBASE_ENABLED: "true"
+  SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: "org.hibernate.dialect.Oracle12cDialect"
+  SPRING_JPA_PROPERTIES_HIBERNATE_GLOBALLY_QUOTED_IDENTIFIERS: "false"
+  SPRING_JPA_DATABASE-PLATFORM: "org.hibernate.dialect.OracleDialect"

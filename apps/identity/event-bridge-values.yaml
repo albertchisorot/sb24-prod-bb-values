@@ -1,0 +1,10 @@
+
+app:
+  metadata:
+    tier: identity
+    public: true
+
+  image:
+    registry: "repo.backbase.com/backbase-docker-releases"
+    repository: event-bridge
+    tag: "2024.03.49-LTS"

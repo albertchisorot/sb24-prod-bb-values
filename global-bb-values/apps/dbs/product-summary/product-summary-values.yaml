@@ -1,0 +1,32 @@
+global:
+
+  app:
+    metadata:
+      capability: product-summary
+
+  jwt:
+    enabled: true
+    existingSecret: "backbase-env-jwt"
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+
+  registry:
+    enabled: false
+
+  activemq:
+    enabled: true
+    checkEnabled: true
+
+  database:
+    type: oracle
+
+  env:
+    BUILDINGBLOCKS_SECURITY_CSRF_ENABLED: "false"
+    "spring.liquibase.enabled": "true"
+    "spring.datasource.validation-query": "SELECT 1 from dual"
+    "spring.datasource.tomcat.validation-query": "SELECT 1 from dual"
+    "spring.datasource.tomcat.max-active": "30"
+    "logging.level.com.backbase": INFO
+
+  service:
+    enabled: true

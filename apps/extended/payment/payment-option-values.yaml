@@ -1,0 +1,21 @@
+app:
+  image:
+    tag: 2024.03.40-LTS
+  resources:
+    memory:
+      ram: 1024
+
+
+env:
+   backbase.payments.international-payment-option-types-settings.types.0.payment-type: "SBA_BB_INTERNATIONAL"
+   backbase.payments.international-payment-option-types-settings.types.0.options.0.execution-time-frame.max: "220"
+   backbase.payments.international-payment-option-types-settings.types.0.options.0.file-upload.maxFiles: "50"
+   backbase.payments.international-payment-option-types-settings.types.0.options.0.file-upload.max-file-size: "7340032"
+   backbase.payments.international-payment-option-types-settings.types.0.options.0.file-upload.file-name-regex: /^[\w\-. ]+$/
+   backbase.payments.international-payment-option-types-settings.types.0.options.0.file-upload.allowed-file-extensions.0: pdf
+   backbase.payments.international-payment-option-types-settings.types.0.options.0.chargeBearer.0: SHA
+   backbase.payments.international-payment-option-types-settings.types.0.options.0.chargeBearer.1: BEN
+   backbase.payments.international-payment-option-types-settings.types.0.options.0.chargeBearer.2: OUR
+   backbase.payments.international-payment-option-types-settings.types.0.business-functions.0: "SBA BB INTERNATIONAL"
+   backbase.payments.international-payment-option-types-settings.types.0.options.0.execution-time-frame.unit: "BUSINESS_DAY"
+   backbase.payments.international-payment-option-types-settings.types.0.options.0.instructionPriority: NORM

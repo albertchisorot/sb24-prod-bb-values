@@ -1,0 +1,109 @@
+# Default values come from backbase-app.
+
+## Global values: Local values have precedence and mergeOverwrite globals
+global:
+
+  app:
+    image:
+      registry: repo.backbase.com/backbase-docker-releases
+      tag: "2024.03.38-LTS"
+
+  # global.jwt sets the JWT related environment variables in the application pod.
+  jwt:
+    # global.jwt.enabled if true will configure the environment variables related with the JWT token secrets.
+    enabled: true
+    # global.jwt.existingSecret is name of external kubernetes secret containing the jwt values
+    existingSecret: "backbase-env-jwt"
+    # global.jwt.SIG_SECRET_KEY_fromSecret will set the variable SIG_SECRET_KEY with the value from the secret  jwt-internal-secretkey secret key.
+    SIG_SECRET_KEY_fromSecret: true
+    # global.jwt.EXTERNAL_SIG_SECRET_KEY_fromSecret will set the variable EXTERNAL_SIG_SECRET_KEY with the value from the jwt-external-secretkey secret key.
+    EXTERNAL_SIG_SECRET_KEY_fromSecret: true
+    # global.jwt.EXTERNAL_ENC_SECRET_KEY_fromSecret will set the variable EXTERNAL_ENC_SECRET_KEY with the value from the jwt-external-enc-secretkey secret key.
+    EXTERNAL_ENC_SECRET_KEY_fromSecret: true
+    # global.jwt.USERCTX_KEY_fromSecret will set the variable USERCTX_KEY with the value from the userctx-key secret key.
+    USERCTX_KEY_fromSecret: true
+
+  # global.registry is used to configure the connection to the eureka registry. We do not recommend eureka for kubernetes deployments.
+  registry:
+    # global.registry.enabled will configure the application to run with eureka registry. This option is discouraged.
+    enabled: false
+
+  activemq:
+    # global.activemq.enabled is true by default. If enabled, it will set automatically these environment variables:
+    # SPRING_ACTIVEMQ_BROKER_URL, SPRING_ACTIVEMQ_USER, SPRING_ACTIVEMQ_PASSWORD
+    enabled: true
+
+  env:
+    SPRING_LIQUIBASE_ENABLED: "true"
+
+  # global.database sets the Database init container health-checks and configure the deployment SPRING_DATASOURCE environment variables.
+  database:
+    enabled: true
+    username: remote_config_service
+    existingSecret: backbase-env-database
+    existingSecretKey: remote_config_service
+
+
+# remote-config values configure a vanilla remote-config environment without multi-tenancy. Defaults to mysql, activemq.
+
+# remote-config.replicaCount is the number of replicas for this deployment.
+replicaCount: 1
+# remote-config.app configures metadata and images of the app to be deployed.
+app:
+  metadata:
+    tier: ""
+    public: "true"
+
+  # remote-config.app.image configures the docker image to use.
+  image:
+    # app.image.repository is the docker repository tag for this deployment.
+    repository: "remote-config"
+
+  # remote-config.app.resources configures the kubernetes resource requests and limits for the deployment.
+  resources:
+    memory:
+      ram: 256
+      containerReserve: 500
+    cpu:
+      minShares: 100
+      maxShares: 500
+
+# remote-config.javaOpts configures the javaopts of the pod.
+javaOpts:
+  # remote-config.javaOpts.extra configures the application to load the yaml configuration from a config folder.
+  extra:
+    - "-Dspring.config.additional-location=/appconfig/"
+
+# remote-config.customFilesPath configures the app to load the property files.
+customFilesPath: "/appconfig/"
+# remote-config.customFiles contains the properties that the application needs for running.
+customFiles:
+  application-kubernetes.yml: |-
+    spring:
+      autoconfigure: # Excludes some spring-autoconfiguration classes in order to use kubernetes native registry.
+        exclude: org.springframework.cloud.netflix.eureka.loadbalancer.LoadBalancerEurekaAutoConfiguration
+      cloud:
+        kubernetes: # Enable usage of kubernetes registry by default.
+          enabled: true
+          reload:
+            enable: true
+        loadbalancer: # Disables ribbon load balancer.
+          ribbon:
+            enabled: false
+    eureka:
+      client:
+        enabled: false # Disables eureka client by default.
+
+# remote-config.database sets the Database via global configuration, only the database sid is per service.
+database:
+  # remote-config.database.sid is the database sid.
+  sid: remote_configuration
+
+# remote-config.service allows kubernetes to expose the deployment through a service.
+service:
+  # remote-config.service.enabled if true will create a kubernetes service mapped to the application deployment.
+  enabled: true
+  nameOverride: remote-config
+
+# remote-config.env allows to override environment variables in the pod
+env: {}

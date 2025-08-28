@@ -1,0 +1,18 @@
+service:
+    nameOverride: "user-manager"
+
+app:
+  image:
+    repository: user-manager
+
+activemq:
+  enabled: true
+  checkEnabled: true
+
+env:
+  BUILDINGBLOCKS_SECURITY_CSRF_ENABLED: "false"
+  backbase.security.csrf.enabled: "false"
+  "spring.liquibase.enabled": "true"
+  "spring.datasource.validation-query": "SELECT 1 from dual"
+  "spring.datasource.tomcat.validation-query": "SELECT 1 from dual"
+  "spring.datasource.tomcat.max-active": "30"

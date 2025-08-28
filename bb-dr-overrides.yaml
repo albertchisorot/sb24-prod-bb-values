@@ -1,0 +1,73 @@
+global:
+  activemq:
+    host: foo #active mq 
+    existingSecret: backbase-env-jms
+    username: sbuser
+    checkNetCatImage: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/newsb24/busybox
+  javaOpts:
+    ## The environment variable that will be used to expose the java opts.
+    envVarName: JAVA_TOOL_OPTIONS
+    ## Default options
+    ## Avoid altering, use extra list to add customization
+    ## Max ram percentage is supported for the latest JDK's and JRE's.
+    base:
+      - "-Dlogging.level.root=INFO"
+      - "-Dlogging.level.com.backbase=DEBUG"
+      - "-Dlogging.level.com.backbase.buildingblocks.backend.api.csv=INFO"
+      - "-Dlogging.level.com.backbase.buildingblocks.backend.communication.http=DEBUG"
+      - "-Dlogging.level.com.standardbank=DEBUG"
+      - "-Dlogging.level.com.backbase.buildingblocks.backend.security.auth.config.MtlsAuthenticationFilter=INFO"
+      - "-Dlogging.level.com.backbase.buildingblocks.communication.http.InterServiceLogger=DEBUG"
+      - "-Dlogging.pattern.level=%5p[%cn,%X{traceId:-},%X{spanId:-}]"
+      #- "-Dlogging.level.org.hibernate.SQL=DEBUG"
+      #- "-Dlogging.level.org.hibernate.type=TRACE"
+      #- "-Dspring.jpa.properties.hibernate.format_sql=true"
+  jwt:
+    existingSecret: backbase-env-jwt
+  database:
+    type: oracle
+    checkEnabled: false
+    host: angodadrscan.ao.sbicdirectory.com
+    port: 1521
+    serviceName: sb24upgd.ao.sbicdirectory.com
+    urlTemplate: "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST={{.database.host }})(PORT={{.database.port }}))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME={{.database.serviceName }})))"
+  env:
+    SERVER_PORT: "8081"
+    SBA_SSL_VERIFY: "true"
+    ENV_PROFILE: "dr"
+    KEYCLOAK_HOSTNAME_DEFAULT_FRONTENDURL: "!!!!!!!!!!!!!!!"
+    KEYCLOAK_HOSTNAME_DEFAULT_INTERNAL_URL: "!!!!!!!!!!!!!!!"
+    MANAGEMENT_HEALTH_RABBIT_ENABLED: "!!!!!!!!!!!!!!!"
+    SBA_CORE_PASSWORD: "!!!!!!!!!!!!!!!"
+    SBA_CORE_CLIENTID: "!!!!!!!!!!!!!!!"
+    SBA_CORE_BASEURL: "!!!!!!!!!!!!!!!"
+    SBA_CORE_SIGNONNAME: "!!!!!!!!!!!!!!!"
+    camel.dataformat.json-jackson.include: N!!!!!!!!!!!!!!!L
+    camel.component.http4.connect-timeout: "!!!!!!!!!!!!!!!"
+    camel.component.http4.max-total-connections: "!!!!!!!!!!!!!!!"
+    camel.component.http4.connection-time-to-live: "120000"
+    camel.component.http4.connections-per-route: "500"
+    SPRING_LIQUIBASE_ENABLED: "false"
+    "KEYCLOAK_CONNECTIONSJPA_QUARKUS_INITIALIZEEMPTY": "false"
+    "KEYCLOAK_CONNECTIONSJPA_QUARKUS_MIGRATIONSTRATEGY": "none"
+    spring.cloud.stream.default-binder: "activemq"
+    backbase.accesscontrol.token.expiration: "5000"
+    eureka.client.enabled: "false"
+    spring.cloud.kubernetes.enabled: "true"
+    spring.cloud.kubernetes.loadbalancer.mode: "SERVICE"
+    spring.cloud.kubernetes.loadbalancer.enabled: "true"
+    spring.cloud.kubernetes.reload.enabled: "true"
+    spring.cloud.kubernetes.discovery.all-namespaces: "false"
+    spring.cloud.loadbalancer.ribbon.enabled: "false"
+    spring.cloud.loadbalancer.cache.enabled: "true"
+    spring.application.json: "{ \"spring.cloud.kubernetes.discovery.service-labels.[app.backbase.com/public]\": \"true\" }"
+    server.error.include-message: "always"
+    #spec variables:
+    backbase.communication.services.payment.order.persistence.baseUri: "/service-api/persistence/v2"
+    backbase.communication.http.request-config.socket-timeout: "80000"
+    backbase.communication.http.oauth2.retry-unauthorized: "false"
+    SBA_MASTER_OTP_PASSWORD: "122333,11111"
+
+  imagePullSecrets:
+    - name: repo-backbase-com-image-pull-secrets
+    - name: internal-registry-docker-config2

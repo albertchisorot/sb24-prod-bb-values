@@ -1,0 +1,16 @@
+service:
+    nameOverride: "audit"
+
+app:
+  image:
+    repository: audit-service
+
+database:
+  enabled: true
+
+env:
+  BUILDINGBLOCKS_SECURITY_CSRF_ENABLED: "false"
+  SPRING_LIQUIBASE_ENABLED: "true"
+  "spring.cache.cache-names": "eventCategories"
+  "spring.cache.caffeine.spec": "expireAfterWrite=10s"
+  BACKBASE_AUDIT_EMITTING-EVENTS-ENABLED: "true"

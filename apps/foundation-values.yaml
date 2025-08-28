@@ -1,0 +1,8 @@
+global:
+  app:
+    image:
+      registry: repo.backbase.com/backbase-docker-releases
+      tag: 2024.03-LTS
+    metadata:
+      public: "'true'" #for bb chart version < 1.0.0
+#      public: "true" #for bb chart v1.0.0

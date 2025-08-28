@@ -1,0 +1,8 @@
+service:
+    nameOverride: "legalentity"
+app:
+  image:
+    repository: legalentity-integration-service
+  resources:
+    memory:
+      ram: 384

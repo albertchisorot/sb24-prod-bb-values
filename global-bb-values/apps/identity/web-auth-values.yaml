@@ -1,0 +1,53 @@
+# Global values: Local values have precedence and mergeOverwrite globals
+global:
+
+  # Configures the service
+  app:
+    metadata:
+      tier: identity
+      public: true
+    image:
+      registry: ""
+      repository: web-authentication
+      tag: ""
+
+  # Database configuration
+  database:
+    enabled: true
+    type: mysql
+    existingSecret: backbase-env-mysql
+    checkEnabled: true
+
+  # Kubernetes Service
+  service:
+    enabled: true
+
+  # JWT variables for application pod
+  jwt:
+    enabled: true
+    existingSecret: "backbase-env-jwt"
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+
+# Kubernetes Service
+volumes:
+  - name: tmp-dir
+    emptyDir: { }
+volumeMounts:
+  - name: tmp-dir
+    mountPath: /tmp # mount path
+securityContext:
+  readOnlyRootFilesystem: true
+
+# Activemq :JMS/ActiveMQ Settings
+activemq:
+  enabled: false
+
+# Kubernetes service
+service:
+  nameOverride: web-authentication
+
+# Database
+database:
+  # -- database name/SID
+  sid: web_authentication

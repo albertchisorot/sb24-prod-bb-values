@@ -1,0 +1,18 @@
+app:
+  metadata:
+    public: "true"
+
+env:
+  "backbase.provision.config.realms.0.name": "sbapb"
+  "backbase.provision.config.realms.0.bank-external-id": "PB"
+  "backbase.provision.config.realms.0.aspects.customer": "retail-banking-permissions"
+  "backbase.provision.config.workflows.0.name": "ProvisionWorkflow"
+  "backbase.provision.config.workflows.0.retryTimes": "1"
+  "backbase.provision.config.workflows.0.compensateEnabled": "true"
+  "backbase.provision.config.workflows.0.compensateRetryTimes": "1"
+  "backbase.provision.config.workflows.0.retryBackoff": "1000"
+  "backbase.provision.config.workflows.0.compensateRetryBackoff": "1000"
+  "backbase.provision.config.workflows.0.compensateBackOffEnabled": "true"
+  "backbase.provision.config.workflows.1.name": "MigrateApplicantWorkflow"
+  "backbase.provision.config.workflows.1.retryTimes": "1"
+  "backbase.provision.config.workflows.1.compensateEnabled": "false"

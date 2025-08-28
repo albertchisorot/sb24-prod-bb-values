@@ -1,0 +1,20 @@
+app:
+  image:
+    registry: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/newsb24
+    tag: 3.0.0-RC-SNAPSHOT
+  resources:
+    memory:
+      ram: 1024
+
+database:
+  username: party_pandp_service
+  existingSecret: backbase-env-database
+  existingSecretKey: partypandpservice_key
+
+ingress:
+  enabled: false
+
+env:
+  BACKBASE_CONTACT_APPROVAL_ENABLED: "true"
+  BACKBASE_SECURITY_MTLS_ENABLED: "false"
+  BACKBASE_SECURITY_PUBLIC_PATHS: "/integration-api/**"

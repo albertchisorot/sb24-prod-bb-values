@@ -1,0 +1,8 @@
+app:
+  image:
+    repository: action-service
+  resources:
+    memory:
+      ram: 1024
+database:
+  enabled: true

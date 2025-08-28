@@ -1,0 +1,85 @@
+global:
+
+  app:
+    metadata:
+      public: "true"
+    image:
+      registry: "repo.backbase.com/backbase-docker-releases"
+      repository: user-lifecycle
+      tag: 2024.03-LTS
+
+  jwt:
+    enabled: true
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+
+  registry:
+    enabled: false
+
+  activemq:
+    enabled: true
+    checkEnabled: true
+
+  env:
+    SPRING_LIQUIBASE_ENABLED: "false"
+
+app:
+
+  resources:
+    memory:
+      ram: 1024
+      containerReserve: 128
+    cpu:
+      minShares: 100
+      maxShares: 1000
+
+service:
+  enabled: true
+  nameOverride: "user-lifecycle"
+
+livenessProbe:
+  enabled: true
+  path: /actuator/health/liveness
+  port: http
+  scheme: HTTP
+  initialDelaySeconds: 90
+  failureThreshold: 6
+  periodSeconds: 30
+  timeoutSeconds: 5
+
+readinessProbe:
+  enabled: true
+  path: /actuator/health/readiness
+  port: http
+  scheme: HTTP
+  initialDelaySeconds: 120
+  failureThreshold: 6
+  periodSeconds: 30
+  timeoutSeconds: 5
+
+env:
+  "backbase.provision.config.realms.0.name": "sbapb"
+  "backbase.provision.config.realms.0.bank-external-id": "PB"
+  "backbase.provision.config.realms.0.aspects.customer": "bank-customer-retail-profile-template"
+  "backbase.provision.config.workflows.0.name": "ProvisionWorkflow"
+  "backbase.provision.config.workflows.0.retryTimes": "1"
+  "backbase.provision.config.workflows.0.compensateEnabled": "true"
+  "backbase.provision.config.workflows.0.compensateRetryTimes": "1"
+  "backbase.provision.config.workflows.0.retryBackoff": "1000"
+  "backbase.provision.config.workflows.0.compensateRetryBackoff": "1000"
+  "backbase.provision.config.workflows.0.compensateBackOffEnabled": "true"
+  "backbase.provision.config.workflows.1.name": "MigrateApplicantWorkflow"
+  "backbase.provision.config.workflows.1.retryTimes": "1"
+  "backbase.provision.config.workflows.1.compensateEnabled": "false"
+
+
+securityContext:
+  readOnlyRootFilesystem: true
+
+volumes:
+  - name: tmp-dir
+    emptyDir: { }
+
+volumeMounts:
+  - name: tmp-dir
+    mountPath: /tmp

@@ -1,0 +1,18 @@
+global:
+
+  app:
+    metadata:
+      tier: identity
+
+  database:
+    enabled: true
+    type: oracle
+
+  jwt:
+    enabled: true
+    existingSecret: "backbase-env-jwt"
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+
+  registry:
+    enabled: false

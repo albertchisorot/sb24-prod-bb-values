@@ -1,0 +1,12 @@
+service:
+  nameOverride: "enrollment-manager"
+
+app:
+  image:
+    repository: enrollment-manager
+
+activemq:
+  enabled: true
+
+env:
+  SPRING_LIQUIBASE_ENABLED: "true"

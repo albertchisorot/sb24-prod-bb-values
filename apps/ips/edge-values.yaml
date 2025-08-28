@@ -1,0 +1,59 @@
+env:
+  GATEWAY_CSRF_ENABLED: "true"
+  SPRING_CONFIG_ADDITIONAL_LOCATION: "/appconfig/application.yml"
+  sba.tracing.enabled: "true"
+customFilesPath: /appconfig/
+customFiles:
+  application.yml: |-
+    spring:
+      cloud:
+        gateway:
+          routes:
+            - id: custom-route
+              uri: http://customservice
+              predicates:
+                - Path=/custom/**
+              filters:
+                - StripPrefix=1
+          globalcors:
+            corsConfigurations:
+              '[/api/contentservices/**]':
+                allowedOrigins:
+                  - https://beta.sb24identity.standardbank.co.ao
+                  - https://beta.sb24.standardbank.co.ao
+                allowedHeaders: "*"
+                allowedMethods:
+                  - GET
+                  - POST
+              '[/api/remote-config/**]':
+                allowedOrigins:
+                  - https://remote-config.sb24prod.ao.sbicdirectory.com
+                allowedHeaders: "*"
+                allowedMethods:
+                  - GET
+                  - POST
+          discovery:
+            locator:
+              include-expression: "true"
+        kubernetes:
+          enabled: true
+          reload:
+            enable: true
+          loadbalancer:
+            enabled: true
+    eureka:
+      client:
+        enabled: false
+    gateway:
+      actuator:
+        user: admin
+        password: ${IDENTITY_MASTERADMIN_PASSWORD:admin}
+enabled: true
+ingress:
+  enabled: false
+
+app:
+  image:
+    repository: ados-edge
+    registry: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/newsb24
+    tag: 2.1.1-RC-SNAPSHOT

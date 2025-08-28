@@ -1,0 +1,9 @@
+env: dr
+overrides:
+  global:
+      app:
+        image:
+          registry: <dr-registry>
+    
+    # ...
+

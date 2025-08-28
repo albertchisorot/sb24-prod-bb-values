@@ -1,0 +1,6 @@
+service:
+  nameOverride: "beneficiary-validation-service"
+
+app:
+  image:
+    repository: beneficiary-validation-service

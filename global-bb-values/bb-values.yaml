@@ -1,0 +1,13 @@
+global:
+  app:
+    deployment:
+      annotations:
+        reloader.stakater.com/auto: "true"
+    image: 
+      registry: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/sb24dev
+    metadata:
+      public: "'true'"
+  env:
+    "TZ": "Africa/Luanda"
+app:  
+  name: "service"

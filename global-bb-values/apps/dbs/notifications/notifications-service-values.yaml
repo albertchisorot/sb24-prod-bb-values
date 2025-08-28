@@ -1,0 +1,21 @@
+service:
+  nameOverride: "notifications-service"
+
+app:
+  image:
+    repository: notifications-service
+
+database:
+  enabled: true
+
+activemq:
+  enabled: true
+  checkEnabled: true
+
+jwt:
+  enabled: true
+  SIG_SECRET_KEY_fromSecret: true
+  USERCTX_KEY_fromSecret: true
+
+env:
+  SPRING_LIQUIBASE_ENABLED: "true"

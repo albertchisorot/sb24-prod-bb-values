@@ -1,0 +1,8 @@
+app:
+  image:
+    repository: ados-actions-integration-service
+  resources:
+    memory:
+      ram: 512
+database:
+  enabled: false

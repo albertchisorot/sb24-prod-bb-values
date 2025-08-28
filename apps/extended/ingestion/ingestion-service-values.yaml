@@ -1,0 +1,8 @@
+ingress:
+  enabled: false
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 150
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 150

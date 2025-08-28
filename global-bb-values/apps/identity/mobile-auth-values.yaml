@@ -1,0 +1,42 @@
+# Some `global` values have `local` counterparts (defined below).
+global:
+  app:
+    metadata:
+      tier: identity
+      public: true
+
+    image:
+      registry: ""
+      repository: mobile-authentication
+      tag: ""
+
+  # JMS/ActiveMQ stuff
+  activemq:
+    enabled: false
+    checkEnabled: false
+
+  # Kubernetes Service
+  service:
+    enabled: true
+
+  # JWT related environment variables for Pod
+  jwt:
+    enabled: true
+    existingSecret: "backbase-env-jwt"
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+
+app:
+  # -- Application name, mandatory.  Will be used as main container name in Pod
+  resources:
+    memory:
+      ram: 1024
+
+# Database stuff
+database:
+  enabled: false
+  checkEnabled: false
+
+# Kubernetes Service
+service:
+  nameOverride: mobile-authentication

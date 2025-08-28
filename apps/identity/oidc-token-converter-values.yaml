@@ -1,0 +1,13 @@
+app:
+  image:
+    registry: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/newsb24
+    tag: 3.0.0-RC-SNAPSHOT
+
+javaOpts:
+  extra:
+    - "-Djavax.net.ssl.keyStore=/tmp/identitykeystore.jks -Djavax.net.ssl.keyStorePassword=Standard1 -Djavax.net.ssl.trustStore=/tmp/identitykeystore.jks -Djavax.net.ssl.trustStorePassword=Standard1 -Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2"
+
+env:
+  BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_ISSUERHOST: "beta.sb24identity.standardbank.co.ao"
+  BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOST: "identity-service:8080"
+  BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOSTSCHEME: "http"

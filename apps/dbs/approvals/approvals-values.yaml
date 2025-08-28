@@ -1,0 +1,16 @@
+app:
+  image:
+    tag: 2024.03.40-LTS
+  resources:
+    memory:
+      ram: 1024
+
+database:
+  username: approvalservice
+  existingSecret: backbase-env-database
+  existingSecretKey: approvalservice_key
+
+env:
+  backbase.approvals.approve-without-policy.enabled: "true"
+  backbase.approvals.confirmation.enabled-for-business-functions: "SBA BB INTERNATIONAL, SBA INTERNATIONAL, SBA BB BILL PAY REFERENCE, SBA BB BILL PAY RUPE, SBA BB CARDLESS WITHDRAWAL, SBA BB DOMESTIC IBAN, SBA BB DOMESTIC BBAN, SBA BATCH PS2, SBA BATCH CSV, SBA BATCH RUPE"
+  backbase.approvals.confirmation.idp-issuer: "https://beta.sb24identity.standardbank.co.ao/auth/realms/sbabusiness"

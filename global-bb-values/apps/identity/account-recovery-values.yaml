@@ -1,0 +1,33 @@
+global:
+
+  app:
+    image:
+      repository: account-recovery-manager
+
+  activemq:
+    # -- If enabled - will set corresponding JMS/ActiveMQ environment variables:
+    # `SPRING_ACTIVEMQ_BROKER_URL, SPRING_ACTIVEMQ_USER, SPRING_ACTIVEMQ_PASSWORD`
+    enabled: true
+    # -- if enabled - an `initContainer` with activemq check will be added to Pod
+    checkEnabled: true
+
+  # JWT related environment variables for Pod
+  jwt:
+    # -- If enabled, sets JWT-related environment variables
+    enabled: true
+    # -- if true, `jwt-internal-secretkey` data field from `existingSecret` will be used as the `SIG_SECRET_KEY` environment variable value.
+    SIG_SECRET_KEY_fromSecret: true
+    # -- If true, `userctx-key` data field from `existingSecret` will be used as the `USERCTX_KEY` environment variable value
+    USERCTX_KEY_fromSecret: true
+
+app:
+  metadata: 
+    tier: identity 
+    public: true 
+
+# Kubernetes Service
+service:
+  # -- if enabled, will create a Kubernetes Service resource for this deployment
+  enabled: true
+  # -- name of the Kubernetes Service.  If not specified, this chart will generate a name by convention
+  nameOverride: account-recovery-manager

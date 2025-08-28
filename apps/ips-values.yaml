@@ -1,0 +1,14 @@
+global:
+  app:
+    image:
+      registry: repo.backbase.com/backbase-docker-releases
+      tag: 2024.03-LTS
+    metadata:
+      public: "'true'"
+
+
+app:
+  image:
+    repository: ados-edge
+    registry: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/newsb24
+    tag: 2.1.1-SNAPSHOT

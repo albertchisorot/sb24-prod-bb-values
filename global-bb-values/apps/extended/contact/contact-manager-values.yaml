@@ -1,0 +1,17 @@
+service:
+  nameOverride: "contact-manager"
+
+app:
+  image:
+    repository: contact-manager
+
+database:
+  enabled: true
+
+env:
+  SPRING_CONFIG_ADDITIONAL_LOCATION: "classpath:application-extension.yml"
+  SPRING_LIQUIBASE_ENABLED: "true"
+  "spring.datasource.validation-query": "SELECT 1 from dual"
+  "spring.datasource.tomcat.validation-query": "SELECT 1 from dual"
+  "spring.datasource.tomcat.max-active": "30"
+  "backbase.bank-address.integration.service-name": "contact-manager-integration-service"

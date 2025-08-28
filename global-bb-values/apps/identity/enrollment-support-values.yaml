@@ -1,0 +1,10 @@
+service:
+  nameOverride: "enrollment-support-api"
+
+app:
+  image:
+    repository: enrollment-support-service
+
+activemq:
+  enabled: true
+  checkEnabled: true

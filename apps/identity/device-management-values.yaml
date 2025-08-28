@@ -1,0 +1,4 @@
+database:
+  username: device_management_service
+  existingSecret: backbase-env-database
+  existingSecretKey: devicemanagementservice_key

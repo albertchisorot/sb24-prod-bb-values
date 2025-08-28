@@ -1,0 +1,23 @@
+service:
+  nameOverride: "device-management-support"
+
+app:
+  image:
+    repository: device-management-support
+
+activemq:
+  enabled: true
+  checkEnabled: true
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 150
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 150
+
+jwt:
+  enabled: true
+  SIG_SECRET_KEY_fromSecret: true
+  USERCTX_KEY_fromSecret: true

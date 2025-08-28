@@ -1,0 +1,13 @@
+database:
+  username: confirmationservice
+  existingSecret: backbase-env-database
+  existingSecretKey: confirmationservice_key
+env:
+  SPRING_LIQUIBASE_ENABLED: "false"
+  SPRING_CONFIG_ADDITIONAL_LOCATION: "/appconfig/application.yml"
+customFilesPath: /appconfig/
+customFiles:
+  application.yml: |-
+    backbase:
+      audit:
+        enabled: false

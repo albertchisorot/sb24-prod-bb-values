@@ -1,0 +1,6 @@
+service:
+  nameOverride: "contact-manager-integration-service"
+
+app:
+  image:
+    repository: contact-manager-integration-service

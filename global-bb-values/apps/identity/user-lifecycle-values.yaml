@@ -1,0 +1,10 @@
+service:
+  enabled: true
+  nameOverride: "userlifecycle"
+
+app:
+  image:
+    repository: user-lifecycle
+
+activemq:
+  enabled: true

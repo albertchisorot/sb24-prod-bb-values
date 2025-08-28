@@ -1,0 +1,6 @@
+service:
+  nameOverride: "payment-order-integration-service"
+
+app:
+  image:
+    repository: payment-order-integration-service

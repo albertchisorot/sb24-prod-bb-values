@@ -1,0 +1,8 @@
+service:
+    nameOverride: "legal-outbound"
+app:
+  image:
+    repository: ados-legal-entity-external-integration-service
+  resources:
+    memory:
+      ram: 512

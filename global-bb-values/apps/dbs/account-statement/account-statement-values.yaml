@@ -1,0 +1,23 @@
+global:
+
+  app:
+    metadata:
+      capability: account-statement
+
+  jwt:
+    enabled: true
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+
+  registry:
+    enabled: false
+
+  activemq:
+    enabled: true
+    checkEnabled: true
+
+  database:
+    enabled: false
+
+  env:
+    BUILDINGBLOCKS_SECURITY_CSRF_ENABLED: "false"

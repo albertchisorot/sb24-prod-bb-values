@@ -1,0 +1,6 @@
+app:
+  image:
+    repository: ados-dbs-custom-documents-service
+  resources:
+    memory:
+      ram: 1024

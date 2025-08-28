@@ -1,0 +1,55 @@
+app:
+  image:
+    repository: backbase-identity
+  pullPolicy: Always
+  resources:
+    memory:
+      ram: 1024
+javaOpts:
+  ## Set tls to TLSv1.2 since current JDK version is not compatible with "JGroups"
+  extra:
+    - "-Djdk.tls.client.protocols=TLSv1.2"
+databaseEnvVarsMap:
+  URL: "KC_DB_URL"
+  USERNAME: "KC_DB_USERNAME"
+  PASSWORD: "KC_DB_PASSWORD"
+  DRIVER_CLASS_NAME: "KC_DB_DRIVER"
+
+service:
+  nameOverride: "identity-service"
+
+env:
+  BACKBASE_HTTP_CORS_HEADERS: "X-User-Context,X-App-Version"
+  BACKBASE_HTTP_CORS: "true"
+  QUARKUS_LOG_FILE_ENABLE: "false"
+  QUARKUS_LOG_LEVEL: "INFO"
+  quarkus.log.console.format: "%d{yyy:MM:dd HH:mm:ss.SSS} %-5p [${quarkus.application.name},%X{traceId},%X{spanId},%X{sampled}] %i --- %c{2.} : %m%n"
+  KEYCLOAK_BACKBASE_DEVICE_URL: "http://device-management-service:8080"
+  KEYCLOAK_BACKBASE_FIDO_URL: "http://fido-service"
+  KEYCLOAK_BACKBASE_OIDC_TOKEN_CONVERTER_URL: "http://token-converter:8080"
+  KEYCLOAK_BACKBASE_PASSCODE_LENGTH: "6"
+  KEYCLOAK_BACKBASE_CONFIRMATION_URL: "http://confirmation:8080"
+  KEYCLOAK_BACKBASE_OIDC_DASH_TOKEN_DASH_CONVERTER_CLIENT_DASH_ID: "bb-client"
+  KEYCLOAK_BACKBASE_OIDC_DASH_TOKEN_DASH_CONVERTER_CLIENT_DASH_SCOPE: "api:service"
+  KEYCLOAK_BACKBASE_OIDC_DASH_TOKEN_DASH_CONVERTER_CLIENT_DASH_SECRET: "bb-secret"
+  KEYCLOAK_BACKBASE_OIDC_DASH_TOKEN_DASH_CONVERTER_GRANT_DASH_TYPE: "client_credentials"
+  KC_SPI_EVENTS_LISTENER_AUDIT_INTEGRATION_SERVICE_URL: "http://audit-service:8080"
+  SBA_VARIABLES_USER_BLOCKED_NOTIFICATION_EMAIL_TEMPLATE: "SB24TempBlockedUser"
+  KC_SPI_MOBILE_AUTHENTICATION_CLIENT_DEFAULT_URL: "http://mobile-authentication:8080"
+  KC_SPI_DEVICE_MANAGEMENT_SERVICE_CLIENT_DEFAULT_URL: 'http://device-management-service:8080'
+  KC_SPI_SERVICE_TOKEN_DEFAULT_URL: "http://token-converter:8080"
+  KC_SPI_BACKBASE_FIDO_URL: "http://fido-service"
+  SBA_VARIABLES_SERVICE_CUSTOM_NOTIFICATIONS_URL: "http://ados-dbs-custom-notifications-service:8080/service-api/v1/notifications"
+  SBA_VARIABLES_LEGAL_ENTITY_INTEGRATION_SERVICE_URL: "http://legalentity-integration-outbound-service:8080/service-api/v2/legal-entities?field=CUSTOMER&term={clientNumber}&type={type}&from=0&size=1"
+  keycloak.connectionsInfinispan.default.clustered: "true"
+  keycloak.connectionsInfinispan.default.jgroupsConfig: "default-k8s-jgroups.xml"
+  quarkus.jgroups.auth.value: "bb-identity"
+  quarkus.jaeger.endpoint: "http://jaeger-collector:14268/api/traces"
+
+livenessProbe:
+  enabled: true
+  path: /auth/health/live
+
+readinessProbe:
+  enabled: true
+  path: /auth/health/ready

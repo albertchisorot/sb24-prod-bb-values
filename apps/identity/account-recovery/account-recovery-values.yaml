@@ -1,0 +1,30 @@
+# Used to specify data about application itself.
+app:
+  image:
+    registry: "repo.backbase.com/backbase-docker-releases"
+    tag: "2024.03-LTS"
+  metadata:
+    public: "true"
+
+  # Default App/JVM resources.
+  # Kubernetes requests/limits will be calculated based on provided number.
+  resources:
+    # Container memory resources
+    memory:
+      # -- (int) Amount of container memory resource to request (in Mi unit).
+      # This results in a Kubernetes memory resource request on the Pod definition.
+      ram: 1024
+
+# Database configuration
+database:
+  enabled: true
+  checkEnabled: true
+  username: account_recovery_service
+  existingSecret: backbase-env-database
+  existingSecretKey: account_recovery_service
+
+env:
+  backbase.account-recovery-manager.workflow.defaults.config.password-redirect.identity-server-url: "https://beta.sb24identity.standardbank.co.ao/auth"
+  SPRING_LIQUIBASE_ENABLED: "true"
+  SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: "org.hibernate.dialect.Oracle12cDialect"
+  logging.level.org.springframework.web.client.RestTemplate: "DEBUG"

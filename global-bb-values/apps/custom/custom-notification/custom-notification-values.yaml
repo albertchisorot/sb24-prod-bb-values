@@ -1,0 +1,38 @@
+global:
+
+  app:
+    metadata:
+      tier: dbs
+      capability: custom-notifications
+    pullPolicy: Always
+
+  jwt:
+    enabled: true
+    existingSecret: "backbase-env-jwt"
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+
+  registry:
+    enabled: false
+
+  activemq:
+    enabled: true
+    checkEnabled: true
+
+    database:
+      enabled: false
+      type: oracle
+
+  env:
+    BUILDINGBLOCKS_SECURITY_CSRF_ENABLED: "false"
+  
+service:
+  nameOverride: "ados-dbs-custom-notifications-service"
+app:
+  image:
+    repository: ados-dbs-custom-notifications-service
+  resources:
+    memory:
+      ram: 1024
+database:
+  enabled: true

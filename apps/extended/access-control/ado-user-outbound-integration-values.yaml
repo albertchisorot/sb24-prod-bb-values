@@ -1,0 +1,16 @@
+javaOpts:
+  extra:
+    - "-Djavax.net.ssl.trustStore=/opt/integration-sba/keystore-sba-prod.jks"
+    - "-Djsse.enableSNIExtension=false"
+app:
+  image:
+    registry: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/newsb24
+    tag: 3.0.0-RC-SNAPSHOT
+    pullPolicy: Always
+
+env:
+  SBA_CORE_BASEURL: sba-api-in.ao.sbicdirectory.com/ados
+  SBA_CORE_CLIENTID:  "276ee69ac181f050b31614ae2f6d9ed4"
+  SBA_CORE_CLIENTSECRET: e3da37aa1cce6f819a565a669c21ea52
+  SBA_CORE_CLIENTIDHEADERNAME: X-Client-Id # it can be X-IBM-Client-id
+  SBA_CORE_CLIENTSECRETHEADERNAME: X-Client-Secret

@@ -1,0 +1,14 @@
+app:
+  image:
+    tag: 2024.03.40-LTS
+  resources:
+    memory:
+      ram: 1024
+
+database:
+  username: notification_service
+  existingSecret: backbase-env-database
+  existingSecretKey: notification_service
+
+env:
+  logging.level.org.springframework.web.client.RestTemplate: "DEBUG"

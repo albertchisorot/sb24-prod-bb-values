@@ -1,0 +1,60 @@
+app:
+  image:
+    registry: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/newsb24
+    tag: 3.0.0-RC-SNAPSHOT
+  resources:
+    memory:
+      ram: 1024
+
+javaOpts:
+  extra:
+    - "-Djavax.net.ssl.trustStore=/etc/ssl/java/certs/cacerts"
+    - "-Djavax.net.ssl.trustStorePassword=changeit"
+
+database:
+  username: payment_order_pandp_service
+  existingSecret: backbase-env-database
+  existingSecretKey: paymentorderpandpservice_key
+
+volumes:
+  - name: sba-jks-configmap
+    configMap:
+      name: sba-jks-configmap
+volumeMounts:
+  - name: sba-jks-configmap
+    mountPath: /etc/ssl/java/certs/cacerts
+    subPath: cacerts
+    readOnly: true
+
+env:
+  # BB properties
+  BACKBASE_PAYMENTS_APPROVAL_ENABLED: "true"
+  BACKBASE_PAYMENTS_BATCHES_APPROVAL_ENABLED: "true"
+  # Transaction Signing
+  backbase.payments.types.SBA_DOMESTIC_IBAN.confirmation.enabled: "true"
+  backbase.payments.types.SBA_DOMESTIC_BBAN.confirmation.enabled: "false"
+  backbase.payments.types.SBA_BB_DOMESTIC_IBAN.confirmation.enabled: "true"
+  backbase.payments.types.SBA_BB_DOMESTIC_BBAN.confirmation.enabled: "true"
+  backbase.payments.types.SBA_INTERNATIONAL.confirmation.enabled: "true"
+  backbase.payments.types.SBA_BB_INTERNATIONAL.confirmation.enabled: "true"
+  backbase.payments.types.SBA_CARDLESS.confirmation.enabled: "true"
+  backbase.payments.types.SBA_BB_CARDLESS.confirmation.enabled: "false"
+  backbase.payments.types.SBA_BILL_REFERENCE.confirmation.enabled: "false"
+  backbase.payments.types.SBA_BB_BILL_REFERENCE.confirmation.enabled: "false"
+  backbase.payments.types.SBA_BILL_RUPE.confirmation.enabled: "false"
+  backbase.payments.types.SBA_BB_BILL_RUPE.confirmation.enabled: "false"
+  # disable limits until services are upgraded/deployed
+  BACKBASE_PAYMENTS_LIMITS_ENABLED: "false"
+  # SBA properties
+  SBA_CORE_SCHEME: "https"
+  SBA_CORE_OLDHOST: "sba-api-in.ao.sbicdirectory.com/ados"
+  SBA_CORE_HOST: "sba-api-in.ao.sbicdirectory.com/ados"
+  SBA_CORE_NEWHOST: "sba-api-in.ao.sbicdirectory.com/ados"
+  SBA_CORE_IBMCLIENTID: "276ee69ac181f050b31614ae2f6d9ed4"
+  SBA_CORE_CLIENTID:  "276ee69ac181f050b31614ae2f6d9ed4"
+  SBA_CORE_CLIENTSECRET:  "e3da37aa1cce6f819a565a669c21ea52"
+  SBA_CORE_ROUTE_CROSS-BORDER: "v1/crossborders"
+  SBA_CORE_ROUTE_CROSS-BORDER-HELPER: "v1/crossborder-helpers"
+  SBA_CORE_ROUTE_UTILITIES: "v1/utilities"
+  SBA_CORE_ROUTE_LOCAL-BANK: "v1/banks"
+  SBA_CORE_ROUTE_PAYMENT-DOMESTIC: "transfers"

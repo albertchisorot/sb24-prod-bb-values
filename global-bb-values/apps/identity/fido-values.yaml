@@ -1,0 +1,16 @@
+service:
+  nameOverride: "fido-service"
+  port: 80
+
+app:
+  image:
+    repository: fido-service
+  resources:
+    memory:
+      ram: 1024
+
+database:
+  enable: true
+
+env:
+  SPRING_LIQUIBASE_ENABLED: "false"

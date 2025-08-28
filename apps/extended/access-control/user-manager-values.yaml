@@ -1,0 +1,36 @@
+app:
+  image:
+    registry: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/newsb24
+    tag: 3.0.0-RC-SNAPSHOT
+
+database:
+  username: user_pandp_service
+  existingSecret: backbase-env-database
+  existingSecretKey: userpandpservice_key
+javaOpts:
+  extra:
+    - "-Djavax.net.ssl.trustStore=/opt/integration-sba/keystore-sba-prod.jks"
+    - "-Djsse.enableSNIExtension=false"
+volumes:
+  - name: sba-jks-configmap
+    configMap:
+      name: sba-jks-configmap
+volumeMounts:
+  - name: sba-jks-configmap
+    mountPath: /opt/integration-sba/keystore-sba-prod.jks
+    subPath: keystore-sba-prod.jks
+    readOnly: true
+service:
+  enabled: true
+ingress:
+  enabled: false
+env:
+  SPRING_CONFIG_ADDITIONAL_LOCATION: "classpath:application-extension.yml"
+  BACKBASE_SECURITY_MTLS_ENABLED: "false"
+  BACKBASE_SECURITY_PUBLIC_PATHS: "/integration-api/**"
+  BACKBASE_USERS_IDENTITYENDPOINTSENABLED: "true"
+  BACKBASE_USERS_IDENTITYINTEGRATIONENABLED: "true"
+  BACKBASE_COMMUNICATION_SERVICES_USER_PROFILE_SCHEME: "http"
+  BACKBASE_COMMUNICATION_SERVICES_USER_PROFILE_SERVICEID: "user-outbound"
+  BACKBASE_APPROVALS_ENABLED: "true"
+  backbase.users.sync-primary-to-identity-enabled: "true"

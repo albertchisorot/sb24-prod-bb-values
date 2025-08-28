@@ -1,0 +1,8 @@
+service:
+    nameOverride: "exchange"
+app:
+  image:
+    repository: ados-exchange-integration-outbound-service
+  resources:
+    memory:
+      ram: 512

@@ -1,0 +1,19 @@
+database:
+  username: approvalservice
+  existingSecret: backbase-env-database
+  existingSecretKey: approvalservice_key
+databaseExtension:
+  username: approvalextension
+  existingSecret: backbase-env-database
+  existingSecretKey: approvalextension_key
+
+env:
+  SPRING_EXTENSION_DATASOURCE_URL: ${spring.datasource.url.approval-service}
+  SPRING_MAIN_ALLOW-BEAN-DEFINITION-OVERRIDING: "true"
+ingress:
+  enabled: false
+
+app:
+  image:
+    registry: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/newsb24
+    tag: 2.1.0-SNAPSHOT

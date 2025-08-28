@@ -1,0 +1,4 @@
+globalExtraValueFiles:
+  - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+    targetRevision: master
+    path: bb-dr-overrides.yaml

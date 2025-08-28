@@ -1,0 +1,14 @@
+service:
+  nameOverride: "push-integration-service"
+
+app:
+  image:
+    repository: push-integration-service
+
+database:
+  enabled: true
+
+env:
+  SPRING_LIQUIBASE_ENABLED: "true"
+  backbase.mobile.push.database.enabled: false
+  backbase.mobile.ios.isFirebase: true

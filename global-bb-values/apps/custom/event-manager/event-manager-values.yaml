@@ -1,0 +1,27 @@
+service:
+  nameOverride: "event-manager"
+
+app:
+  image:
+    repository: ados-event-manager
+
+ingress:
+  enabled: false
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 150
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 150
+
+activemq:
+  enabled: true
+
+database:
+  enabled: false
+
+jwt:
+  enabled: true
+  SIG_SECRET_KEY_fromSecret: true

@@ -1,0 +1,15 @@
+database:
+  username: party_pandp_service
+  existingSecret: backbase-env-database
+  existingSecretKey: partypandpservice_key
+
+app:
+  image:
+    registry: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/newsb24
+    tag: 2.1.5-SNAPSHOT
+
+ingress:
+  enabled: false
+env:
+  BACKBASE_SECURITY_MTLS_ENABLED: "false"
+  BACKBASE_SECURITY_PUBLIC_PATHS: "/integration-api/**"

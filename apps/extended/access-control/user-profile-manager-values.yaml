@@ -1,0 +1,15 @@
+database:
+  username: user_pandp_service
+  existingSecret: backbase-env-database
+  existingSecretKey: userpandpservice_key
+
+env:
+  BACKBASE_USERS_IDENTITYENDPOINTSENABLED: "true"
+  BACKBASE_USERS_IDENTITYINTEGRATIONENABLED: "true"
+  #BACKBASE_COMMUNICATION_SERVICES_INTEGRATION_USER_EXTERNAL_OUTBOUND_SCHEME: "http"
+  #BACKBASE_COMMUNICATION_SERVICES_INTEGRATION_USER_EXTERNAL_OUTBOUND_SERVICEID: "ados-user-outbound-integration-service"
+
+app:
+  image:
+    registry: repo.backbase.com/backbase-docker-releases
+    tag: 2024.03.40-LTS

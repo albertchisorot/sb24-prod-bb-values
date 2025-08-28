@@ -1,0 +1,15 @@
+service:
+  nameOverride: "document-manager"
+app:
+  image:
+    repository: document-manager-service
+
+activemq:
+  enabled: true
+
+database:
+  enabled: false
+
+jwt:
+  enabled: true
+  SIG_SECRET_KEY_fromSecret: true

@@ -1,0 +1,5 @@
+service:
+  nameOverride: "account-statement-integration-service"
+app:
+  image:
+    repository: ados-account-statement-integration-service

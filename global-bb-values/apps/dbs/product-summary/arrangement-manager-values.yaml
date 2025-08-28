@@ -1,0 +1,19 @@
+service:
+  nameOverride: "arrangement-manager"
+
+app:
+  image:
+    repository: arrangement-manager
+
+database:
+  enabled: true
+
+env:
+  SPRING_LIQUIBASE_ENABLED: "true"
+
+
+livenessProbe:
+  initialDelaySeconds: 300
+
+readinessProbe:
+  initialDelaySeconds: 300

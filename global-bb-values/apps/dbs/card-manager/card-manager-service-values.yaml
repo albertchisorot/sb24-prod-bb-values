@@ -1,0 +1,9 @@
+service:
+  nameOverride: "card-manager-service"
+
+app:
+  image:
+    repository: card-manager-service
+
+env:
+  BACKBASE_PANDP_ENABLED: "false"

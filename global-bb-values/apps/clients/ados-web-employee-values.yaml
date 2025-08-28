@@ -1,0 +1,58 @@
+## Global values: Local values have precedence and mergeOverwrite globals
+global:
+  # global.registry is used to configure the connection to the eureka registry. We do not recommend eureka for kubernetes deployments.
+  registry:
+    # global.registry.enabled will configure the application to run with eureka registry. This option is discouraged.
+    enabled: false
+
+  activemq:
+    # global.activemq.enabled is true by default. If enabled, it will set automatically these environment variables:
+    # SPRING_ACTIVEMQ_BROKER_URL, SPRING_ACTIVEMQ_USER, SPRING_ACTIVEMQ_PASSWORD
+    enabled: false
+
+  # global.database sets the Database init container health-checks and configure the deployment SPRING_DATASOURCE environment variables.
+  database:
+    # global.database.enabled is true by default. If enabled, it will set automatically these environment variables:
+    # SPRING_DATASOURCE_URL, SPRING_DATASOURCE_USERNAME, SPRING_DATASOURCE_PASSWORD, SPRING_DATASOURCE_DRIVER_CLASS_NAME
+    enabled: false
+
+# remote-config-web-app values configure a vanilla remote-config-web-app environment without multi-tenancy.
+
+# remote-config.replicaCount is the number of replicas for this deployment.
+replicaCount: 1
+enabled: true
+metadata:
+  tier: web-app
+app:
+  image:
+    # remote-config-web-app.app.image.repository is the docker repository tag for this deployment.
+    repository: "employee-essentials"
+  resources:
+    memory:
+      ram: 128
+    cpu:
+      minShares: 50
+      maxShares: 100
+# remote-config-web-app.service allows kubernetes to expose the deployment through a service.
+service:
+  enabled: true
+  nameOverride: employee-web-app
+# remote-config-web-app.env allows to override environment variables in the pod.
+env: 
+  BASE_HREF: "/sba-employee-web/"
+volumes:
+  - name: html
+    emptyDir: {}
+  - name: nginx
+    emptyDir: {}
+  - name: tmp
+    emptyDir: {}
+volumeMounts:
+  - mountPath: /tmp
+    name: tmp
+  - mountPath: /html
+    name: html
+  - mountPath: /etc/nginx/conf.d
+    name: nginx
+securityContext:
+  readOnlyRootFilesystem: true

@@ -1,0 +1,715 @@
+global:
+  # This service requires a JWT to be present. In this case it will be gotten from the backbase-env chart which provides these secrets.
+  jwt:
+    enabled: true
+    existingSecret: "backbase-env-jwt"
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+  # This service depends on activemq (for async auditing).
+  activemq:
+    enabled: true
+    checkEnabled: true
+
+  # Eureka should be disabled for kubernetes deployments as per Helm Charts guideline.
+  registry:
+    enabled: false
+  # enable kubernetes liveness probe
+  livenessProbe:
+    enabled: true
+  # enable kubernetes readiness probe
+  readinessProbe:
+    enabled: true
+  env:
+    # CSRF is disabled by default inside our test-capabilities. On production systems it's important to have this protection enabled.
+    # See https://community.backbase.com/documentation/platform-services/latest/csrf_protection
+    BUILDINGBLOCKS_SECURITY_CSRF_ENABLED: "true"
+    EUREKA_CLIENT_ENABLED: "false"
+    SPRING_CLOUD_KUBERNETES_ENABLED: "true"
+    SPRING_CLOUD_KUBERNETES_RELOAD_ENABLED: "true"
+    SPRING_CLOUD_LOADBALANCER_RIBBON_ENABLED: "false"
+    SPRING_AUTOCONFIGURE_EXCLUDE: "org.springframework.cloud.netflix.eureka.loadbalancer.LoadBalancerEurekaAutoConfiguration"
+
+
+app:
+  image:
+    repository: payment-batch
+    tag: 2024.03.84-LTS
+  resources:
+    memory:
+      ram: 1700
+  metadata:
+    public: 'true'
+
+service:
+  nameOverride: payment-batch
+
+database:
+  enabled: true
+  sid: payment_batch
+
+volumes:
+  - name: tmp-dir
+    emptyDir: { }
+# -- Mount the temp-dir to the /tmp
+volumeMounts:
+  - name: tmp-dir
+    mountPath: /tmp
+# -- Set the access to the filesystem to read only.
+securityContext:
+  readOnlyRootFilesystem: true
+
+javaOpts:
+  extra:
+    - "-Dspring.config.additional-location=/batch-payment-config/application-extension.yml,\
+      /batch-payment-config/application-batch-type-rupe.yaml,\
+      /batch-payment-config/application-batch-type-ps2.yaml,\
+      /batch-payment-config/application-batch-type-csv.yaml"
+
+customFilesPath: "/batch-payment-config/"
+customFiles:
+  # -- batch-payment.customFile application-kubernetes.yml file content configured
+  application-extension.yml: |-
+    spring:
+      profiles:
+        include: rules,batch-type-csv,batch-type-ps2,batch-type-rupe
+      main:
+        allow-bean-definition-overriding: true
+      servlet.multipart.enabled: false
+    backbase:
+      audit:
+        enabled: true
+      communication:
+        services:
+          arrangement-manager:
+            serviceId: arrangement-manager
+      payments:
+        authentication:
+          serviceAgreement:
+            fallbackToMasterServiceAgreement: true
+        batches:
+          approval:
+            enabled: true  
+          enabled: true
+          nacha-credit-early-access: true
+          supported-batch-upload-types:
+            - PS2
+            - CSV
+            - RUPE
+          entitlements:
+            resource: Batch
+            privileges:
+              create: create
+              view: view
+            confidentialFunctions:
+              confidential:
+                view: Batch - List Confidential
+                manage: Batch - Manage Confidential
+  application-batch-type-rupe.yaml: |-
+    maximum:
+      lines: 9999
+
+    backbase:
+      payments:
+        batches:
+          entitlements:
+            functions:
+              RUPE: "SBA BATCH RUPE"
+          types:
+            RUPE:
+              parser:
+                definition:
+                  delimiter: ","
+                  date-format: "yyyyMMdd"
+                  batch-upload-header:
+                    min-occurs: 1
+                    max-occurs: 1
+                    start-pattern: "RUPE"
+                    field-definitions:
+                      Record Type:
+                        mapping-field: batchFileType
+                        description: "The code identifying the File Header Record is RUPE."
+                  batch-header:
+                    min-occurs: 1
+                    start-pattern: "RUPE"
+                    field-definitions:
+                      Batch Type:
+                        mapping-field: batchType
+                        description: "The type of the batch"
+                      Debit Account Header:
+                        mapping-field: transitory.originatorAccount
+                        description: "debitAccount"
+                      Currency Header:
+                        mapping-field: currency
+                        description: "ISO Currency"
+                      Execution Date Header:
+                        mapping-field: requestedExecutionDate
+                        description: "Requested Execution Date"
+                      Description Header:
+                        mapping-field: batchName
+                        description: "descriptionHeader"
+                  batch-payment:
+                    min-occurs: 1
+                    max-occurs: ${maximum.lines}
+                    field-definitions:
+                      Reference:
+                        mapping-field: paymentReference
+                        description: "Payment Reference"
+                      Amount:
+                        mapping-field: amount
+                        description: "Amount"
+              modifier:
+                rules:
+              validator:
+                rules:
+                  - file-size-under-1-mb
+                  - validate-debit-account-size
+                  - payment-quantity-rule
+                  - validate-currency-aoa
+                  - validate-special-chars-batchName
+                  - validate-reference-size
+                  - validate-amount-positive
+                  - validate-amount-value
+                  - validate-amount-decimal
+                  - validate-at-least-one-payment
+                  - validate-description-size
+              rules:
+                # Validation RUPE rules
+                file-size-under-1-mb:
+                  type: SpEL-validation
+                  when: on-file
+                  configuration:
+                    action: "file.size < 1000000"
+                    error.message: "File size ({{actual}}) exceeds the configured maximum ({{expected}})"
+                    error.context.actual: "file.size"
+                    error.context.expected: "1000000"
+                    error.key: "UploadMaxFileSize"
+                validate-debit-account-size:
+                  type: SpEL-validation
+                  when: on-batch
+                  configuration:
+                    action: "#stringUtils.isNotBlank(batchHeader.transitory['originatorAccount']) && batchHeader.transitory['originatorAccount'].length() == 10"
+                    error.message: "Invalid Debit Account size. Expected {{expected}}."
+                    error.context.expected: "10"
+                    error.key: "InvalidDebitAccount"
+                payment-quantity-rule:
+                  type: SpEL-validation
+                  when: on-batch-payment-end
+                  configuration:
+                    action: "batchReport.totalPaymentsCount < ${maximum.lines}"
+                    error.message: "Invalid batch total records {{actual}}. Expected below {{expected}}."
+                    error.context.actual: "batchReport.totalPaymentsCount"
+                    error.context.expected: "${maximum.lines}"
+                    error.key: "CSVInvBatchTotalRec9999"
+                validate-currency-aoa:
+                  type: SpEL-validation
+                  when: on-batch
+                  configuration:
+                    action: "'AOA'.equals(batchHeader.currency)"
+                    error.message: "Invalid currency {{actual}}. Expected {{expected}}."
+                    error.context.actual: "batchHeader.currency"
+                    error.context.expected: "'AOA'"
+                    error.key: "BatchInvalidCurrency"
+                validate-description-size:
+                  type: SpEL-validation
+                  when: on-batch
+                  configuration:
+                    action: "#stringUtils.isNotBlank(batchHeader.batchName) && batchHeader.batchName.length() >= 1 && batchHeader.batchName.length() <= 16"
+                    error.message: "Invalid Description size. Expected between {{minimum}} and {{maximum}}"
+                    error.context.minimum: "1"
+                    error.context.maximum: "16"
+                    error.key: "InvalidDescription"
+                validate-reference-size:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "#stringUtils.isNotBlank(batchPayment.paymentReference) && batchPayment.paymentReference.length() == 20"
+                    error.message: "Invalid reference size. Expected {{expected}}."
+                    error.context.expected: "20"
+                    error.key: "InvalidReferenceSize"
+                validate-amount-positive:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "batchPayment.amount.longValue() > 0"
+                    error.message: "The value '{{amount}}' for '{{fieldName}}' must be a positive number"
+                    error.context.amount: "batchPayment.amount"
+                    error.context.fieldName: "'amount'"
+                    error.key: "AmountIsNotPositive"
+                validate-amount-value:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "batchPayment.amount.precision() >= 1 && batchPayment.amount > 0  && batchPayment.amount <= 99999999.99"
+                    error.message: "Invalid Amount. Expected between {{minimum}} and {{maximum}}."
+                    error.context.minimum: "0.01"
+                    error.context.maximum: "99999999.99"
+                    error.key: "InvalidAmountValue"
+                validate-amount-decimal:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "batchPayment.amount.scale() <= 2"
+                    error.message: "The fractional part of '{{amount}}' for '{{fieldName}}' exceeds the maximum number of decimal digits ({{maximum}})"
+                    error.context.amount: "batchPayment.amount"
+                    error.context.fieldName: "'amount'"
+                    error.context.maximum: "2"
+                    error.key: "AmountContainsTooManyDecimalDigits"
+                validate-at-least-one-payment:
+                  type: SpEL-validation
+                  when: on-batch-upload-end
+                  configuration:
+                    action: "batchReport.totalPaymentsCount > 0"
+                    error.message: "Invalid batch size. Expected between {{minimum}} and {{maximum}}"
+                    error.context.minimum: "1"
+                    error.context.maximum: "${maximum.lines}"
+                    error.key: "InvalidBatchMinimumOne"
+                validate-special-chars-batchName:
+                  type: SpEL-validation
+                  when: on-batch
+                  configuration:
+                    action: "! batchHeader.batchName.matches('.*[^A-Za-z0-9 ].*')"
+                    error.message: "{{fieldName}} should not contain special characters: '{{value}}'"
+                    error.context.fieldName: "'batchName'"
+                    error.context.value: "batchHeader.batchName"
+                    error.key: "SpecialCharsNotAllowed"
+  application-batch-type-ps2.yaml: |-
+    maximum:
+      lines: 9999
+
+    backbase:
+      payments:
+        batches:
+          entitlements:
+            functions:
+              PS2: "SBA BATCH PS2"
+          types:
+            PS2:
+              parser:
+                definition:
+                  fixed-length: true
+                  date-format: "yyyyMMdd"
+                  batch-upload-header:
+                    min-occurs: 1
+                    max-occurs: 1
+                    start-pattern: "PS2"
+                    target-defaults:
+                      batchFileType: "PS2"
+                    field-definitions:
+                      Record Type Code:
+                        mapping-field: batchFileType
+                        description: "The code identifying the File Header Record"
+                        start-position: 1
+                        end-position: 3
+                  batch-header:
+                    min-occurs: 1
+                    start-pattern: "PS21"
+                    target-defaults:
+                      batchType: "PS2"
+                    field-definitions:
+                      Record Type Code:
+                        mapping-field: transitory.recordTypeCode
+                        description: "The record type code of he batch is BB_HEADER"
+                        start-position: 1
+                        end-position: 3
+                      Batch Type:
+                        mapping-field: additions.ps2BatchType
+                        description: "The type of the batch"
+                        start-position: 5
+                        end-position: 6
+                      Originator Account:
+                        mapping-field: transitory.originatorAccount
+                        description: "The debit account"
+                        start-position: 18
+                        end-position: 28
+                      Requested Execution Date:
+                        mapping-field: requestedExecutionDate
+                        description: "The execution date"
+                        start-position: 34
+                        end-position: 41
+                      Batch Currency:
+                        mapping-field: currency
+                        description: "The batch currency"
+                        start-position: 31
+                        end-position: 33
+                      Batch Name:
+                        mapping-field: batchName
+                        description: "The name of the batch"
+                        start-position: 42
+                        end-position: 61
+                  batch-footer:
+                    min-occurs: 1
+                    start-pattern: "PS29"
+                    field-definitions:
+                      Quant Transfer Records:
+                        mapping-field: transitory.batchPaymentsCount
+                        data-type: numeric
+                        description: "Number of Transaction Records"
+                        start-position: 16
+                        end-position: 29
+                      Total Amount:
+                        mapping-field: batchTotalCreditAmount
+                        data-type: numeric
+                        description: "Total Instruction Amount"
+                        start-position: 30
+                        end-position: 42
+                  batch-payment:
+                    min-occurs: 1
+                    max-occurs: ${maximum.lines}
+                    start-pattern: "PS22"
+                    field-definitions:
+                      Counterparty Name:
+                        mapping-field: counterpartyName
+                        data-type: string
+                        description: "Receiver’s name"
+                        start-position: 44
+                        end-position: 63
+                      Account:
+                        mapping-field: counterpartyAccount
+                        description: "Receiver’s account number at their financial institution"
+                        start-position: 10
+                        end-position: 30
+                      Amount:
+                        mapping-field: amount
+                        data-type: amount
+                        description: "Transaction amount with two decimal places. Left zero fill if necessary"
+                        start-position: 31
+                        end-position: 43
+                      Transfer Reference:
+                        mapping-field: description
+                        description: "Counter Party Statement Reference"
+                        start-position: 64
+                        end-position: 78
+              validator:
+                rules:
+                  - file-size-under-1-mb
+                  - batch-totalrecords-is-valid
+                  - batch-total-debit-amount-is-valid
+                  - batch-payment-quantity-rule
+                  - validate-currency-aoa
+                  - validate-amount-decimal
+                  - validate-special-chars-counterpartyName
+                  - validate-special-chars-description
+              modifier:
+                rules:
+                  - update-total-records-on-header
+                  - update-total-amount-on-header
+                  - set-batch-payment-currency
+              rules:
+                file-size-under-1-mb:
+                  type: SpEL-validation
+                  when: on-file
+                  configuration:
+                    action: "file.size < 1000000"
+                    error.message: "File size ({{actual}}) exceeds the configured maximum ({{expected}})"
+                    error.context.actual: "file.size"
+                    error.context.expected: "1000000"
+                    error.key: "UploadMaxFileSize"
+                batch-totalrecords-is-valid:
+                  type: SpEL-validation
+                  when: on-batch-end
+                  configuration:
+                    action: "batchReport.creditPaymentsCount == batchHeader.batchPaymentsCount"
+                    error.message: "Invalid batch total records {{actual}}. Expected number is {{expected}}."
+                    error.context.actual: "batchReport.creditPaymentsCount"
+                    error.context.expected: "batchHeader.batchPaymentsCount"
+                    error.key: "PS2InvBatchTotalRec"
+                batch-total-debit-amount-is-valid:
+                  type: SpEL-validation
+                  when: on-batch-end
+                  configuration:
+                    action: "batchReport.totalCreditAmount == batchFooter.batchTotalCreditAmount"
+                    error.message: "Invalid batch total debit amount {{actual}}. Expected amount is {{expected}}."
+                    error.context.actual: "batchReport.totalCreditAmount"
+                    error.context.expected: "batchFooter.batchTotalCreditAmount"
+                    error.key: "PS2InvBatchTotalCreditAmount"
+                batch-payment-quantity-rule:
+                  type: SpEL-validation
+                  when: on-batch-end
+                  configuration:
+                    action: "batchReport.totalPaymentsCount < ${maximum.lines}"
+                    error.message: "Invalid batch total records {{actual}}. Expected number is {{expected}}."
+                    error.context.actual: "batchReport.totalPaymentsCount"
+                    error.context.expected: "${maximum.lines}"
+                    error.key: "PS2InvBatchTotalRec9999"
+                validate-currency-aoa:
+                  type: SpEL-validation
+                  when: on-batch-end
+                  configuration:
+                    action: "'AOA'.equals(batchHeader.currency)"
+                    error.message: "Invalid currency {{actual}}. Expected {{expected}}."
+                    error.context.actual: "batchHeader.currency"
+                    error.context.expected: "'AOA'"
+                    error.key: "BatchInvalidCurrency"
+                validate-amount-decimal:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "batchPayment.amount.scale() <= 2"
+                    error.message: "The fractional part of '{{amount}}' for '{{fieldName}}' exceeds the maximum number of decimal digits ({{maximum}})"
+                    error.context.amount: "batchPayment.amount"
+                    error.context.fieldName: "'amount'"
+                    error.context.maximum: "2"
+                    error.key: "AmountContainsTooManyDecimalDigits"
+                validate-special-chars-counterpartyName:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "! batchPayment.counterpartyName.matches('.*[^A-Za-z0-9 ].*')"
+                    error.message: "{{fieldName}} should not contain special characters: '{{value}}'"
+                    error.context.fieldName: "'counterpartyName'"
+                    error.context.value: "batchPayment.counterpartyName"
+                    error.key: "SpecialCharsNotAllowed"
+                validate-special-chars-description:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "! batchPayment.description.matches('.*[^A-Za-z0-9 ].*')"
+                    error.message: "{{fieldName}} should not contain special characters: '{{value}}'"
+                    error.context.fieldName: "'description'"
+                    error.context.value: "batchPayment.description"
+                    error.key: "SpecialCharsNotAllowed"
+                update-total-records-on-header:
+                  type: SpEL-modification
+                  when: on-batch-end
+                  configuration:
+                    action: "batchHeader.batchPaymentsCount = batchFooter.transitory['batchPaymentsCount'].replaceFirst('0+', '')"
+                update-total-amount-on-header:
+                  type: SpEL-modification
+                  when: on-batch-end
+                  configuration:
+                    action: "batchHeader.batchTotalCreditAmount = batchFooter.batchTotalCreditAmount"
+                set-batch-payment-currency:
+                  type: SpEL-modification
+                  when: on-batch-payment-end
+                  configuration:
+                    action: "batchPayment.currency = batchHeader.currency"
+  application-batch-type-csv.yaml: |-
+    maximum:
+      lines: 9999
+
+    backbase:
+      payments:
+        batches:
+          entitlements:
+            functions:
+              CSV: "SBA BATCH CSV"
+          types:
+            CSV:
+              parser:
+                definition:
+                  delimiter: ","
+                  date-format: "yyMMdd"
+                  batch-upload-header:
+                    min-occurs: 1
+                    max-occurs: 1
+                    start-pattern: "CSV"
+                    field-definitions:
+                      Record Type Code:
+                        mapping-field: batchFileType
+                        description: "The code identifying the File Header Record is CSV."
+                  batch-header:
+                    min-occurs: 1
+                    start-pattern: "CONTA A DEBITAR"
+                    field-definitions:
+                      Debit Account Header:
+                        mapping-field: transitory.debitAccountHeader
+                        description: "debitAccountHeader"
+                      Batch Type:
+                        mapping-field: batchType
+                        dictionary-converter:
+                          BENEFICIARIO: "CSV"
+                        description: "The type of the batch"
+                      IBAN Header:
+                        mapping-field: transitory.ibanHeader
+                        description: "Transitory iban header"
+                      Currency Header:
+                        mapping-field: transitory.currencyHeader
+                        description: "currencyHeader"
+                      Value Header:
+                        mapping-field: transitory.transferValueHeader
+                        description: "transferValueHeader"
+                      Description Header:
+                        mapping-field: batchName
+                        description: "descriptionHeader"
+                  batch-payment:
+                    min-occurs: 1
+                    max-occurs: ${maximum.lines}
+                    field-definitions:
+                      Debit Account:
+                        mapping-field: transitory.originatorAccount
+                        description: "The debit account"
+                      Beneficiary Name:
+                        mapping-field: counterpartyName
+                        description: "beneficiaryNameHeader"
+                      IBAN:
+                        mapping-field: counterpartyAccount
+                        description: "Receiver’s account IBAN"
+                      Currency:
+                        mapping-field: currency
+                        description: "Amount currency"
+                      Value:
+                        mapping-field: amount
+                        description: "Amount to be paid"
+                      Description:
+                        mapping-field: description
+                        description: "Payment description"
+              modifier:
+                rules:
+                  - add-requested-execution-date
+                  - set-batch-header-currency
+                  - set-batch-payment-account-nib
+              validator:
+                rules:
+                  - payment-quantity-rule
+                  - file-size-under-1-mb
+                  - validate-currency-aoa
+                  - validate-amount-size
+                  - validate-amount-decimal
+                  - validate-counterparty-account-number-size
+                  - validate-counterparty-name-size
+                  - validate-account-number-size
+                  - validate-amount-positive
+                  - validate-description-size
+                  - validate-at-least-one-payment
+                  - validate-special-chars-counterpartyName
+                  - validate-special-chars-description
+              rules:
+                # Validation CSV rules
+                file-size-under-1-mb:
+                  type: SpEL-validation
+                  when: on-file
+                  configuration:
+                    action: "file.size < 1000000"
+                    error.message: "File size ({{actual}}) exceeds the configured maximum ({{expected}})"
+                    error.context.actual: "file.size"
+                    error.context.expected: "1000000"
+                    error.key: "UploadMaxFileSize"
+                payment-quantity-rule:
+                  type: SpEL-validation
+                  when: on-batch-payment-end
+                  configuration:
+                    action: "batchReport.totalPaymentsCount < ${maximum.lines}"
+                    error.message: "Invalid batch total records {{actual}}. Expected below {{expected}}."
+                    error.context.actual: "batchReport.totalPaymentsCount"
+                    error.context.expected: "${maximum.lines}"
+                    error.key: "CSVInvBatchTotalRec9999"
+                validate-currency-aoa:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "'AOA'.equals(batchPayment.currency)"
+                    error.message: "Invalid currency {{actual}}. Expected {{expected}}."
+                    error.context.actual: "batchPayment.currency"
+                    error.context.expected: "'AOA'"
+                    error.key: "BatchInvalidCurrency"
+                validate-amount-decimal:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "batchPayment.amount.scale() <= 2"
+                    error.message: "The fractional part of '{{amount}}' for '{{fieldName}}' exceeds the maximum number of decimal digits ({{maximum}})"
+                    error.context.amount: "batchPayment.amount"
+                    error.context.fieldName: "'amount'"
+                    error.context.maximum: "2"
+                    error.key: "AmountContainsTooManyDecimalDigits"
+                validate-counterparty-account-number-size:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "#stringUtils.isNotBlank(batchPayment.counterpartyAccount) && batchPayment.counterpartyAccount.length() >= 10 && batchPayment.counterpartyAccount.length() <= 34"
+                    error.message: "Invalid CounterpartyAccount size. Expected between {{minimum}} and {{maximum}}"
+                    error.context.minimum: "10"
+                    error.context.maximum: "34"
+                    error.key: "InvalidCounterpartyAccount"
+                validate-counterparty-name-size:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "#stringUtils.isNotBlank(batchPayment.counterpartyName) && batchPayment.counterpartyName.length() >= 2 && batchPayment.counterpartyName.length() <= 34"
+                    error.message: "Invalid CounterpartyName size. Expected between {{minimum}} and {{maximum}}."
+                    error.context.minimum: "2"
+                    error.context.maximum: "34"
+                    error.key: "InvalidCounterpartyName"
+                validate-account-number-size:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "#stringUtils.isNotBlank(batchPayment.transitory['originatorAccount']) && batchPayment.transitory['originatorAccount'].length() >= 10 && batchPayment.transitory['originatorAccount'].length() <= 15"
+                    error.message: "Invalid originatorAccount size. Expected between {{minimum}} and {{maximum}}."
+                    error.context.minimum: "10"
+                    error.context.maximum: "15"
+                    error.key: "InvalidOriginatorAccount"
+                validate-amount-positive:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "batchPayment.amount.longValue() > 0"
+                    error.message: "The value '{{amount}}' for '{{fieldName}}' must be a positive number"
+                    error.context.amount: "batchPayment.amount"
+                    error.context.fieldName: "'amount'"
+                    error.key: "AmountIsNotPositive"
+                validate-amount-size:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "batchPayment.amount.precision() >= 1 && batchPayment.amount.precision() <= 18"
+                    error.message: "Invalid Amount size. Expected between {{minimum}} and {{maximum}}."
+                    error.context.minimum: "1"
+                    error.context.maximum: "18"
+                    error.key: "InvalidAmountSize"
+                validate-description-size:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "#stringUtils.isNotBlank(batchPayment.description) && batchPayment.description.length() >= 1 && batchPayment.description.length() <= 16"
+                    error.message: "Invalid Description size. Expected between {{minimum}} and {{maximum}}"
+                    error.context.minimum: "1"
+                    error.context.maximum: "16"
+                    error.key: "InvalidDescription"
+                validate-at-least-one-payment:
+                  type: SpEL-validation
+                  when: on-batch-upload-end
+                  configuration:
+                    action: "batchReport.totalPaymentsCount > 0"
+                    error.message: "Invalid batch size. Expected between {{minimum}} and {{maximum}}"
+                    error.context.minimum: "1"
+                    error.context.maximum: "${maximum.lines}"
+                    error.key: "InvalidBatchMinimumOne"
+                validate-special-chars-counterpartyName:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "! batchPayment.counterpartyName.matches('.*[^A-Za-z0-9 ].*')"
+                    error.message: "{{fieldName}} should not contain special characters: '{{value}}'"
+                    error.context.fieldName: "'counterpartyName'"
+                    error.context.value: "batchPayment.counterpartyName"
+                    error.key: "SpecialCharsNotAllowed"
+                validate-special-chars-description:
+                  type: SpEL-validation
+                  when: on-batch-payment
+                  configuration:
+                    action: "! batchPayment.description.matches('.*[^A-Za-z0-9 ].*')"
+                    error.message: "{{fieldName}} should not contain special characters: '{{value}}'"
+                    error.context.fieldName: "'description'"
+                    error.context.value: "batchPayment.description"
+                    error.key: "SpecialCharsNotAllowed"
+                add-requested-execution-date:
+                  type: SpEL-modification
+                  when: on-batch
+                  configuration:
+                    action: "batchHeader.requestedExecutionDate = T(java.time.LocalDate).now()"
+                add-currency-to-batch-header:
+                  type: SpEL-modification
+                  when: on-batch-payment
+                  configuration:
+                    action: "batchHeader.currency = batchPayment.currency"
+                set-batch-header-currency:
+                  type: SpEL-modification
+                  when: on-batch-payment-end
+                  configuration:
+                    action: "batchHeader.currency = batchPayment.currency"
+                set-batch-payment-account-nib:
+                  type: SpEL-modification
+                  when: on-batch-payment-end
+                  configuration:
+                    action: "batchPayment.counterpartyAccount = batchPayment.counterpartyAccount.substring(4)"

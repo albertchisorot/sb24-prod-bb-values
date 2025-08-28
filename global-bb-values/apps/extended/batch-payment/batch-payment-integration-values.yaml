@@ -1,0 +1,39 @@
+service:
+  nameOverride: "payment-batch-integration-service"
+ingress:
+  enabled: false
+app:
+  image:
+    repository: batch-manager-integration-service
+  resources:
+    memory:
+      ram: 1024
+env:
+  spring.main.allow-bean-definition-overriding: "true"
+  backbase.payments.limits.enabled: "true"
+  backbase:
+    api:
+      extensions:
+        classes:
+          com.backbase.dbs.batches.integration.outbound.model.PostBatchOrderRequest: batch-outbound-request
+          com.backbase.dbs.batches.integration.inbound.model.IntegrationMultipleUpdatableBatchPayment: put-additions-request
+          com.backbase.dbs.batches.integration.inbound.model.PutBatchOrderRequest: put-additions-request
+        property-sets:
+          put-additions-request:
+            properties:
+              - property-name: totalCommissionAmount
+                type: String
+              - property-name: totalCommissionCurrency
+                type: String
+              - property-name: totalTaxAmount
+                type: String
+              - property-name: totalTaxCurrency
+                type: String
+          batch-outbound-request:
+            properties:
+              - property-name: ps2BatchType
+                type: string
+              - property-name: debitType
+                type: string
+              - property-name: description
+                type: string

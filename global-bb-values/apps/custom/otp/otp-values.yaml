@@ -1,0 +1,30 @@
+global:
+
+  app:
+    metadata:
+      tier: dbs
+      capability: otp
+    pullPolicy: Always
+
+  jwt:
+    enabled: true
+    existingSecret: "backbase-env-jwt"
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+
+  registry:
+    enabled: false
+
+  activemq:
+    enabled: true
+    checkEnabled: true
+
+  database:
+    enabled: true
+    type: oracle
+
+  env:
+    "spring.datasource.validation-query": "SELECT 1 from dual"
+    "spring.datasource.tomcat.validation-query": "SELECT 1 from dual"
+    BUILDINGBLOCKS_SECURITY_CSRF_ENABLED: "false"
+    BACKBASE_PANDP_ENABLED: "false"

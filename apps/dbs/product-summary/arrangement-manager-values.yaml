@@ -1,0 +1,228 @@
+app:
+  image:
+    registry: repo.backbase.com/backbase-docker-releases
+    tag: 2024.03.40-LTS
+  resources:
+    cpu:
+      maxShares: 500
+      minShares: 200
+    memory:
+      ram: 1024
+      containerReserve: 1024
+
+database:
+  username: arrangement_pandp_service
+  existingSecret: backbase-env-database
+  existingSecretKey: arrangementpandpservice_key
+
+javaOpts:
+  extra:
+    - "-Djavax.net.ssl.trustStore=/etc/ssl/java/certs/cacerts"
+    - "-Djavax.net.ssl.trustStorePassword=changeit"
+
+volumes:
+  - name: sba-jks-configmap
+    configMap:
+      name: sba-jks-configmap
+
+volumeMounts:
+  - name: sba-jks-configmap
+    mountPath: /etc/ssl/java/certs/cacerts
+    subPath: cacerts
+    readOnly: true
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 150
+  failureThreshold: 10
+  timeoutSeconds: 10
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 150
+  failureThreshold: 10
+  timeoutSeconds: 10
+
+ingress:
+  enabled: false
+
+env:
+  BACKBASE_SECURITY_MTLS_ENABLED: "false"
+  BACKBASE_SECURITY_PUBLIC_PATHS: "/integration-api/**"
+  SPRING_AUTOCONFIGURE_EXCLUDE: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+
+  ################### Dashboard View config starts ################################################################################
+  "backbase.arrangement.arrangement-views.views.dashboard": "limit: 5"
+  "backbase.arrangement.arrangement-views.views.dashboard.includeLiveDetail": "true"
+  "backbase.arrangement.arrangement-views.views.dashboard.retrieveLiveData": "BEFORE"
+  "backbase.arrangement.arrangement-views.views.dashboard.balance-aggregations.all.favorites": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.balance-aggregations.all.non-favorites": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.categorizers.cat-savings-account.expression": "productKind.uri == 'savings-account'"
+  "backbase.arrangement.arrangement-views.views.dashboard.categorizers.cat-loans.expression": "productKind.uri == 'loan'"
+  "backbase.arrangement.arrangement-views.views.dashboard.categorizers.cat-current-accounts.expression": "productKind.uri == 'current-account'"
+  "backbase.arrangement.arrangement-views.views.dashboard.categorizers.cat-term-deposits.expression": "productKind.uri == 'term-deposit'"
+  "backbase.arrangement.arrangement-views.views.dashboard.categorizers.cat-credit-cards.expression": "productKind.uri == 'credit-card'"
+  "backbase.arrangement.arrangement-views.views.dashboard.categorizers.cat-factors.expression": "productKind.uri == 'factor'"
+  "backbase.arrangement.arrangement-views.views.dashboard.categorizers.cat-finance-contracts.expression": "productKind.uri == 'finance-contract'"
+  "backbase.arrangement.arrangement-views.views.dashboard.categorizers.cat-memos.expression": "productKind.uri == 'memo'"
+  "backbase.arrangement.arrangement-views.views.dashboard.categorizers.cat-debit-cards.expression": "productKind.uri == 'debit-card'"
+  "backbase.arrangement.arrangement-views.views.dashboard.balance-aggregations.savings.cat-savings-account": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.balance-aggregations.loans.cat-loans": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.balance-aggregations.current-accounts.cat-current-accounts": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.balance-aggregations.term-deposits.cat-term-deposits": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.balance-aggregations.credit-cards.cat-credit-cards": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.balance-aggregations.factors.cat-factors": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.balance-aggregations.finance-contracts.cat-finance-contracts": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.balance-aggregations.memos.cat-memos": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.balance-aggregations.debit-cards.cat-debit-cards": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.categories": "favorites"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.categories": "non-favorites"
+
+  # favorite category-mappings cat-loans
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-loans.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-loans.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-loans.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-loans.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-loans.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-loans.productKindName": "productKind.name"
+  # non-favorites category-mappings cat-loans
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-loans.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-loans.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-loans.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-loans.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-loans.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-loans.productKindName": "productKind.name"
+
+  # favorites category-mappings cat-savings-account
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-savings-account.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-savings-account.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-savings-account.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-savings-account.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-savings-account.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-savings-account.productKindName": "productKind.name"
+  # non-favorites category-mappings cat-savings-account
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-savings-account.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-savings-account.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-savings-account.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-savings-account.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-savings-account.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-savings-account.productKindName": "productKind.name"
+
+  # favorites category-mappings cat-current-accounts
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-current-accounts.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-current-accounts.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-current-accounts.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-current-accounts.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-current-accounts.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-current-accounts.productKindName": "productKind.name"
+  # non-favorites category-mappings cat-current-accounts
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-current-accounts.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-current-accounts.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-current-accounts.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-current-accounts.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-current-accounts.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-current-accounts.productKindName": "productKind.name"
+  
+  # favorites category-mappings cat-term-deposits
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-term-deposits.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-term-deposits.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-term-deposits.accountNumber": "bban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-term-deposits.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-term-deposits.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-term-deposits.productKindName": "productKind.name"
+  # non-favorites category-mappings cat-term-deposits
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-term-deposits.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-term-deposits.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-term-deposits.accountNumber": "bban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-term-deposits.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-term-deposits.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-term-deposits.productKindName": "productKind.name"
+
+  # favorites category-mappings cat-credit-cards
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-credit-cards.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-credit-cards.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-credit-cards.accountNumber": "panSuffix"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-credit-cards.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-credit-cards.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-credit-cards.productKindName": "productKind.name"
+  # non-favorites category-mappings cat-credit-cards
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-credit-cards.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-credit-cards.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-credit-cards.accountNumber": "panSuffix"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-credit-cards.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-credit-cards.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-credit-cards.productKindName": "productKind.name"
+
+  # favorites category-mappings cat-factors
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-factors.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-factors.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-factors.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-factors.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-factors.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-factors.productKindName": "productKind.name"
+  # non-favorites category-mappings cat-factors
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-factors.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-factors.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-factors.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-factors.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-factors.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-factors.productKindName": "productKind.name"
+
+  # favorites category-mappings cat-finance-contracts
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-finance-contracts.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-finance-contracts.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-finance-contracts.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-finance-contracts.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-finance-contracts.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-finance-contracts.productKindName": "productKind.name"
+  # non-favorites category-mappings cat-finance-contracts
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-finance-contracts.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-finance-contracts.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-finance-contracts.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-finance-contracts.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-finance-contracts.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-finance-contracts.productKindName": "productKind.name"
+
+  # favorites category-mappings cat-memos
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-memos.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-memos.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-memos.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-memos.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-memos.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-memos.productKindName": "productKind.name"
+  # non-favorites category-mappings cat-memos
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-memos.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-memos.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-memos.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-memos.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-memos.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.category-mappings.cat-memos.productKindName": "productKind.name"
+
+ # favorites category-mappings cat-debit-cards
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-debit-cards.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-debit-cards.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-debit-cards.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-debit-cards.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-debit-cards.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.category-mappings.cat-debit-cards.productKindName": "productKind.name"
+  "backbase.arrangement.arrangement-views.views.dashboard.categorizers.favorites.expression.kind": any
+  "backbase.arrangement.arrangement-views.views.dashboard.categorizers.favorites.expression": userPreferences.favorite == true
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.mappings.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.mappings.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.mappings.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.mappings.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.mappings.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.favorites.mappings.productKindName": "productKind.name"
+  # non-favorites category-mappings cat-debit-cards
+  "backbase.arrangement.arrangement-views.views.dashboard.categorizers.non-favorites.expression.kind": any
+  "backbase.arrangement.arrangement-views.views.dashboard.categorizers.non-favorites.expression": userPreferences.favorite != true
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.mappings.currency": "currency"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.mappings.displayName": "displayName"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.mappings.accountNumber": "iban"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.mappings.primaryBalance": "availableBalance"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.mappings.productKindUri": "productKind.uri"
+  "backbase.arrangement.arrangement-views.views.dashboard.groups.non-favorites.mappings.productKindName": "productKind.name"
+  ################### Dashboard View configs ends here ################################################################################
+  
+  # pull latest balance from core: to support MOB (backward compatibility)
+  "backbase.arrangement.pull-latest-balance": "true"

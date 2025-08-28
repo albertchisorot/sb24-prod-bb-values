@@ -1,0 +1,23 @@
+# Default values come from backbase-app.
+
+## Global values: Local values have precedence and mergeOverwrite globals
+global:
+
+  app:
+    metadata:
+      public: true
+    # global.app.image configures the docker image to use.
+    image:
+      # app.image.registry is the docker repository tag for this deployment.
+      registry: "repo.backbase.com/backbase-docker-releases"
+      repository: remote-config-web-app
+      # app.image.tag is the docker image tag for this deployment.
+      tag: "2024.03-LTS"
+
+  env:
+    API_URL: https://beta.sb24.standardbank.co.ao/api
+    AUTH_CLIENT_ID: bb-web-client
+    AUTH_REALM: backbase
+    AUTH_URL: https://beta.sb24identity.standardbank.co.ao/auth
+    spring.application.json: ""
+

@@ -1,0 +1,50 @@
+global:
+  app:
+    metadata:
+      tier: foundation
+      public: "true"
+    pullPolicy: Always
+
+  jwt:
+    enabled: true
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+
+  registry:
+    enabled: false
+
+  activemq:
+    enabled: true
+    checkEnabled: true
+
+  service:
+    enabled: true
+
+  database:
+    enabled: false
+    type: oracle
+
+  livenessProbe:
+    enabled: true
+    path: /actuator/health/liveness
+    port: http
+    scheme: HTTP
+    initialDelaySeconds: 150
+    failureThreshold: 6
+    periodSeconds: 30
+    timeoutSeconds: 5
+
+  readinessProbe:
+    enabled: true
+    path: /actuator/health/readiness
+    port: http
+    scheme: HTTP
+    initialDelaySeconds: 180
+    failureThreshold: 6
+    periodSeconds: 30
+    timeoutSeconds: 5
+
+  env:
+    "spring.datasource.validation-query": "SELECT 1 from dual"
+    "spring.datasource.tomcat.validation-query": "SELECT 1 from dual"
+    "spring.datasource.tomcat.max-active": "30"

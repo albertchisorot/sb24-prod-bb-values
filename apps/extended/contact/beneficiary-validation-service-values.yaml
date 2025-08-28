@@ -1,0 +1,6 @@
+app:
+  image:
+    tag: 2024.03.40-LTS
+  resources:
+    memory:
+      ram: 1024

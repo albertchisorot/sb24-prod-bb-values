@@ -1,0 +1,16 @@
+app:
+  image:
+    tag: 2024.03.40-LTS
+
+database:
+  username: push_notification_integration_service
+  existingSecret: backbase-env-database
+  existingSecretKey: push_notification_integration_service
+
+volumeMounts:
+  - name: secret-config-volume
+    mountPath: /app/mob_cert_mount
+volumes:
+  - name: secret-config-volume
+    secret:
+      secretName: mob-secret

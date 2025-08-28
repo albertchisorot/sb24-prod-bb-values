@@ -1,0 +1,25 @@
+service:
+  nameOverride: "confirmation"
+
+app:
+  image:
+    repository: confirmation
+
+database:
+  enabled: true
+
+env:
+  BACKBASE_OIDC_TOKEN_CONVERTER_URL: "http://token-converter:8080"
+  BACKBASE_OIDC_TOKEN_CONVERTER_CLIENT_ID: "bb-client"
+  BACKBASE_OIDC_TOKEN_CONVERTER_CLIENT_SECRET: "bb-secret"
+  BACKBASE_OIDC_TOKEN_CONVERTER_GRANT_TYPE: "client_credentials"
+  BACKBASE_CONFIRMATION_MAXIMUM-CALLBACK-ATTEMPTS: "1"
+  SPRING_LIQUIBASE_ENABLED: "false"
+  SPRING_DATASOURCE_VALIDATIONQUERY: "SELECT 1"
+  SPRING_DATASOURCE_TOMCAT_VALIDATIONQUERY: "SELECT 1"
+  SPRING_DATASOURCE_TOMCAT_MAXACTIVE: "30"
+  BUILDINGBLOCKS_SECURITY_CSRF_ENABLED: "false"
+
+activemq:
+  enabled: true
+  checkEnabled: true

@@ -1,0 +1,6 @@
+service:
+  nameOverride: "cardless-integration-service"
+
+app:
+  image:
+    repository: cardless-integration-service

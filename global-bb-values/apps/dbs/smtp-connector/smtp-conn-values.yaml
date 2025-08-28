@@ -1,0 +1,70 @@
+global:
+  app:
+    resources:
+      memory:
+        ram: 1024
+        containerReserve: 128
+      cpu:
+        minShares: 100
+        maxShares: 500
+    image:
+      registry: ""
+      repository: smtp-email-connector
+      tag: ""
+
+  jwt:
+    enabled: true
+    existingSecret: "backbase-env-jwt"
+    SIG_SECRET_KEY_fromSecret: true
+    EXTERNAL_SIG_SECRET_KEY_fromSecret: true
+    EXTERNAL_ENC_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+
+  registry:
+    enabled: false
+
+  activemq:
+    enabled: true
+    checkEnabled: true
+
+  database:
+    enabled: false
+    checkEnabled: false
+
+javaOpts:
+  extra:
+    - "-Dspring.config.additional-location=/conf/smtp-connection-config.yml"
+
+customFilesPath: "/conf/"
+customFiles:
+  application-kubernetes.yml: |-
+    spring:
+      autoconfigure: # Excludes some spring-autoconfiguration classes in order to use kubernetes native registry.
+        exclude: org.springframework.cloud.function.context.config.ContextFunctionCatalogAutoConfiguration,org.springframework.cloud.netflix.eureka.loadbalancer.LoadBalancerEurekaAutoConfiguration
+      cloud:
+        kubernetes: # Enable usage of kubernetes registry by default.
+          enabled: true
+          reload:
+            enable: true
+        loadbalancer: # Disables ribbon load balancer.
+          ribbon:
+            enabled: false
+    eureka:
+      client:
+        enabled: false # Disables eureka client by default.
+
+service:
+  enabled: true
+  nameOverride: "smtp-email-connector"
+
+  # -- Add an emptyDir volume called the tmp-dir.
+volumes:
+  - name: tmp-dir
+    emptyDir: { }
+  # -- Mount the temp-dir to the /tmp
+volumeMounts:
+  - name: tmp-dir
+    mountPath: /tmp
+  # -- set the access to the filesystem to read only.
+securityContext:
+  readOnlyRootFilesystem: true

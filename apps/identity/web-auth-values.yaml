@@ -1,0 +1,72 @@
+app:
+  image:
+    registry: "repo.backbase.com/backbase-docker-releases"
+    tag: "2024.03.38-LTS"
+  metadata:
+    public: true
+
+env:
+  "SPRING_LIQUIBASE_ENABLED": "true"
+  "backbase.authenticators.otp.fromEmail":
+    valueFrom:
+      secretKeyRef:
+        name: smtp-details
+        key: username
+  "backbase.authenticators.channels.sms": "true"
+  "backbase.authenticators.channels.email": "true"
+  "backbase.authenticators.otp.fromSms": "1111111111"
+  "backbase.authenticators.otp.resends": "3"
+  "backbase.authenticators.otp.resendDelay": "30"
+  "backbase.authenticators.otp.verificationAttemptsAllowed": "3"
+  "backbase.authenticators.channels.pushdevice": "true"
+  "backbase.contentservices.otpPlaceholder": "otp"
+  "backbase.contentservices.messagePriority": 7
+  "backbase.contentservices.templateLocalization.enabled": "true"
+  "backbase.contentservices.templateLocalization.defaultLanguage": "eng"
+  "backbase.contentservices.title.objectPath": "/identity/otp/web-auth-otp-title"
+  "backbase.contentservices.title.repositoryId": "resourceRepository"
+  "backbase.contentservices.body.objectPath": "/identity/otp/web-auth-otp-body"
+  "backbase.contentservices.body.repositoryId": "resourceRepository"
+  "backbase.pushnotification.pushToAppName": "appName"
+  "backbase.pushnotification.pushPriority": 7
+  "backbase.pushnotification.authCodePlaceHolder": "authCode"
+  "backbase.pushnotification.pushTitleConfig.objectPath": "/identity/push-notifications/web-auth-push-title"
+  "backbase.pushnotification.pushTitleConfig.repositoryId": "resourceRepository"
+  "backbase.pushnotification.pushBodyConfig.objectPath": "/identity/push-notifications/web-auth-push-body"
+  "backbase.pushnotification.pushBodyConfig.repositoryId": "resourceRepository"
+  "backbase.contentservices.channel.email.title.contentId": "email-title"
+  "backbase.contentservices.channel.email.title.repositoryId": "resourceRepository"
+  "backbase.contentservices.channel.email.title.objectPath": "/identity/otp/email-auth-otp-title"
+  "backbase.contentservices.channel.email.body.contentId": "email-body"
+  "backbase.contentservices.channel.email.body.repositoryId": "resourceRepository"
+  "backbase.contentservices.channel.email.body.objectPath": "/identity/otp/email-auth-otp-body/email-auth-otp-body"
+  "backbase.contentservices.channel.sms.body.contentId": "sms-body"
+  "backbase.contentservices.channel.sms.body.repositoryId": "resourceRepository"
+  "backbase.contentservices.channel.sms.body.objectPath": "/identity/otp/sms-auth-otp-body"
+
+
+database:
+  enabled: true
+  type: oracle
+  checkEnabled: true
+  username: web_authentication_service
+  existingSecret: backbase-env-database
+  existingSecretKey: web_authentication_service
+
+service:
+  enabled: true
+
+jwt:
+  enabled: true
+  existingSecret: "backbase-env-jwt"
+  SIG_SECRET_KEY_fromSecret: true
+  USERCTX_KEY_fromSecret: true
+
+volumes:
+  - name: tmp-dir
+    emptyDir: { }
+volumeMounts:
+  - name: tmp-dir
+    mountPath: /tmp
+securityContext:
+  readOnlyRootFilesystem: true

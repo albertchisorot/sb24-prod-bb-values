@@ -1,0 +1,10 @@
+service:
+    nameOverride: "user-profile"
+app:
+  image:
+    repository: user-profile-manager
+  resources:
+    memory:
+      ram: 512
+database:
+  enabled: true

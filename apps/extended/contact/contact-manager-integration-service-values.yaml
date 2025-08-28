@@ -1,0 +1,7 @@
+app:
+  image:
+    registry: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/newsb24
+    tag: 1.0.0-RC-SNAPSHOT
+  resources:
+    memory:
+      ram: 1024

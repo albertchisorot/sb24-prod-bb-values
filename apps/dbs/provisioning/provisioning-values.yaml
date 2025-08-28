@@ -1,0 +1,170 @@
+# Default values coming from backbase-app.
+
+## Global values: Local values have precedence and mergeOverwrite globals
+global:
+
+  # global.app configures metadata and images of the app to be deployed.
+  app:
+    # -- key-value pairs used for additional `app.backbase.com/key: value` labels for deployments
+    metadata: { tier: "cxs", capability: "provisioning", public: "true" }
+
+    # global.app.image configures the docker image to use.
+    image:
+      # -- global.app.image.registry is the docker registry for this deployment.
+      registry: "repo.backbase.com/backbase-docker-releases"
+      # -- global.app.image.repository is the docker repository for this deployment.
+      repository: provisioning
+      # -- global.app.image.tag is the docker image tag for this deployment.
+      tag: 2024.03-LTS
+
+  # global.jwt sets the JWT related environment variables in the application pod.
+  jwt:
+    # -- global.jwt.enabled if true will configure the environment variables related with the JWT token secrets.
+    enabled: true
+    # -- global.jwt.SIG_SECRET_KEY_fromSecret will set the variable SIG_SECRET_KEY with the value from the secret  jwt-internal-secretkey secret key.
+    SIG_SECRET_KEY_fromSecret: true
+    # -- global.jwt.USERCTX_KEY_fromSecret will set the variable USERCTX_KEY with the value from the userctx-key secret key.
+    USERCTX_KEY_fromSecret: true
+
+  # global.registry is used to configure the connection to the eureka registry. We do not recommend eureka for kubernetes deployments.
+  registry:
+    # -- If enabled - will configure the application to run with eureka registry. This option is discouraged.
+    enabled: false
+
+  # global.activemq sets the Active MQ init container health-checks and configure the deployment SPRING_ACTIVEMQ environment variables.
+  activemq:
+    # -- If enabled - will set corresponding JMS/ActiveMQ environment variables:
+    # `SPRING_ACTIVEMQ_BROKER_URL, SPRING_ACTIVEMQ_USER, SPRING_ACTIVEMQ_PASSWORD`
+    enabled: true
+
+    # -- if enabled - an `initContainer` with activemq check will be added to Pod
+    checkEnabled: true
+
+  # global.database sets the Database init container health-checks and configure the deployment SPRING_DATASOURCE environment variables.
+  database:
+    # -- If enabled - will set corresponding database environment variables:
+    # `SPRING_DATASOURCE_URL, SPRING_DATASOURCE_USERNAME, SPRING_DATASOURCE_PASSWORD, SPRING_DATASOURCE_DRIVER_CLASS_NAME`
+    enabled: true
+
+    # -- if enabled - initContainer with database check will be added to Pod
+    checkEnabled: true
+
+    #change values to provisioner user name and password
+    username: provisioning
+    existingSecret: backbase-env-database
+    existingSecretKey: provisioning_key
+
+  # -- Key-value pairs representing [environment variables for application container](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/).
+  # It is possible to use templates as value here (will be evaluated using tpl function).
+  env:
+    SPRING_LIQUIBASE_ENABLED: "true"
+    SPRING_DATASOURCE_USERNAME: "provisioning"
+
+
+# -- provisioning.replicaCount is the number of replicas for this deployment.
+#Removed for backbase chart version 1.0.0
+# replicaCount: 1
+
+# provisioning.app configures metadata and images of the app to be deployed.
+app:
+
+  # provisioning.app.resources configures the kubernetes resource requests and limits for the deployment.
+  resources:
+    # Container memory resources
+    memory:
+      # -- (int) Amount of container memory resource to request (in Mi unit).
+      # This results in a Kubernetes memory resource request on the Pod defintion.
+      ram: 1024
+
+      # -- (int) Extra memory reserved for container use (in Mi unit).
+      containerReserve: 128
+    # Container CPU resources
+    cpu:
+      # -- (int) Amount of shares of a CPU unit to request (where 1000=1 CPU).
+      minShares: 100
+
+      # -- (int) Amount of shares of a CPU unit to limit to (where 1000=1 CPU).
+      maxShares: 1000
+
+# provisioning.service allows kubernetes to expose the deployment through a service.
+service:
+  # -- if enabled, will create a Kubernetes Service resource for this deployment
+  enabled: true
+
+  # -- name of the Kubernetes Service.  If not specified, this chart will generate a name by convention
+  nameOverride: "provisioning"
+
+# provisioning.livenessProbe configures the Kubernetes Liveness Probe.
+livenessProbe:
+  # -- if true, enables the Kubernetes [Liveness Probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
+  # for the main container.
+  enabled: true
+
+  # -- The HTTP path exposed by the container that the probe should request
+  path: /actuator/health/liveness
+
+  # -- The port exposed by the container that the probe should connect to
+  port: http
+
+  # -- The URL scheme exposed by the container that the probe should request
+  scheme: HTTP
+
+  # -- Number of seconds after the container has started before probes are initiated. Minimum value is 0.
+  initialDelaySeconds: 90
+
+  # -- When a probe fails, Kubernetes will try `failureThreshold` times before giving up.
+  # Giving up in case of liveness probe means restarting the container.  Minimum value is 1
+  failureThreshold: 6
+
+  # -- How often (in seconds) to perform the probe. Minimum value is 1.
+  periodSeconds: 30
+
+  # -- Number of seconds after which the probe times out. Minimum value is 1.
+  timeoutSeconds: 5
+
+# provisioning.readinessProbe configures the Kubernetes Readiness Probe.
+readinessProbe:
+  # -- if true, enables the Kubernetes [Readiness Probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
+  # for the main container.
+  enabled: true
+
+  # -- The HTTP path exposed by the container that the probe should request
+  path: /actuator/health/readiness
+
+  # -- The port exposed by the container that the probe should connect to
+  port: http
+
+  # -- The URL scheme exposed by the container that the probe should request
+  scheme: HTTP
+
+  # -- Number of seconds after the container has started before probes are initiated. Minimum value is 0.
+  initialDelaySeconds: 120
+
+  # -- When a probe fails, Kubernetes will try `failureThreshold` times before giving up.
+  # Giving up in case of readiness probe will be marked the Pod as Unready.  Minimum value is 1
+  failureThreshold: 6
+
+  # -- How often (in seconds) to perform the probe. Minimum value is 1.
+  periodSeconds: 30
+
+  # -- Number of seconds after which the probe times out. Minimum value is 1.
+  timeoutSeconds: 5
+
+# -- provisioning.env allows to override environment variables in the pod
+env: {}
+
+# -- Allows to set security context for container
+# -- https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+securityContext:
+  # -- set the access to the filesystem to read only.
+  readOnlyRootFilesystem: true
+
+# -- Add an emptyDir volume called the tmp-dir.
+volumes:
+  - name: tmp-dir
+    emptyDir: { }
+
+# -- Mount the temp-dir to the /tmp
+volumeMounts:
+  - name: tmp-dir
+    mountPath: /tmp

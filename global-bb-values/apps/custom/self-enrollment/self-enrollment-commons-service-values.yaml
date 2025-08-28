@@ -1,0 +1,8 @@
+service:
+  nameOverride: "enrollment-commons"
+app:
+  image:
+    repository: ados-self-enrollment-commons-service
+  resources:
+    memory:
+      ram: 512

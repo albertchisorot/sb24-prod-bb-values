@@ -1,0 +1,13 @@
+javaOpts:
+  extra:
+    - "-Djavax.net.ssl.trustStore=/opt/integration-sba/keystore-sba-prod.jks"
+    - "-Djsse.enableSNIExtension=false"
+volumes:
+  - name: sba-jks-configmap
+    configMap:
+      name: sba-jks-configmap
+volumeMounts:
+  - name: sba-jks-configmap
+    mountPath: /opt/integration-sba/keystore-sba-prod.jks
+    subPath: keystore-sba-prod.jks
+    readOnly: true

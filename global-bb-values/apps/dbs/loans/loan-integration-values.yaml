@@ -1,0 +1,6 @@
+service:
+  nameOverride: "loan-integration-service"
+
+app:
+  image:
+    repository: loan-integration-service

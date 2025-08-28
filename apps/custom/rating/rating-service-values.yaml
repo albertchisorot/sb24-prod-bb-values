@@ -1,0 +1,4 @@
+database:
+  username: ratingservice
+  existingSecret: backbase-env-database
+  existingSecretKey: ratingservice_key

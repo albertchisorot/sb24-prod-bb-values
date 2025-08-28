@@ -1,0 +1,8 @@
+service:
+  nameOverride: "reference-data"
+app:
+  image:
+    repository: ados-dbs-reference-data-service
+  resources:
+    memory:
+      ram: 1024

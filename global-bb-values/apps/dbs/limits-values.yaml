@@ -1,0 +1,36 @@
+global:
+
+  app:
+    metadata:
+      tier: dbs
+      capability: limits
+    pullPolicy: Always
+
+  jwt:
+    enabled: true
+    existingSecret: "backbase-env-jwt"
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+  registry:
+    enabled: false
+  activemq:
+    enabled: true
+    checkEnabled: true
+  database:
+    enabled: true
+    type: oracle
+
+  env:
+    BUILDINGBLOCKS_SECURITY_CSRF_ENABLED: "false"
+    backbase.security.csrf.enabled: "false"
+    BACKBASE_SECURITY_PUBLIC_PATHS: "/integration-api/**"
+    "spring.liquibase.enabled": "false"
+    "spring.datasource.validation-query": "SELECT 1 from dual"
+    "spring.datasource.tomcat.validation-query": "SELECT 1 from dual"
+    "spring.datasource.tomcat.max-active": "30"
+    "backbase.limits.disable-default-consumption-strategies.entered": "true"
+    "backbase.limits.defaults.currency": "AOA"
+    "backbase.limits.applicable-currency.currency-list": "EUR, USD, AOA"
+    "backbase.limits.xccy.enabled": "true"
+    "backbase.exchange.client.openapi.serviceId": "currency-exchange-service"
+    "backbase.limits.exceptional-flow-strategies.skip-consumption-strategies.paymentTypes": "SBA DOMESTIC BBAN, SBA DOMESTIC IBAN, SBA INTERNATIONAL, SBA CARDS"

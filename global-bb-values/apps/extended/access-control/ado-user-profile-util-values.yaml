@@ -1,0 +1,8 @@
+service:
+    nameOverride: "user-profile-utils"
+app:
+  image:
+    repository: ados-user-profile-utils-service
+  resources:
+    memory:
+      ram: 512

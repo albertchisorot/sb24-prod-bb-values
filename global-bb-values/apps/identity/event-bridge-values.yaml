@@ -1,0 +1,33 @@
+# Some `global` values have `local` counterparts (defined below).
+global:
+  app:
+    metadata:
+      tier: identity
+      public: true
+
+    image:
+      registry: ""
+      repository: event-bridge
+      tag: ""
+
+  # JMS/ActiveMQ stuff
+  activemq:
+    enabled: true
+    checkEnabled: true
+
+  # JWT related environment variables for Pod
+  jwt:
+    enabled: true
+    existingSecret: "backbase-env-jwt"
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+
+  # Database stuff
+  database:
+    enabled: false
+    checkEnabled: false
+
+# Kubernetes Service
+service:
+  enabled: true
+  nameOverride: "event-bridge"

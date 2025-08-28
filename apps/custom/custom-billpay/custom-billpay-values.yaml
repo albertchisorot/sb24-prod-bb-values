@@ -1,0 +1,26 @@
+database:
+    username: custom_bill_pay_service
+    existingSecret: backbase-env-database
+    existingSecretKey: custombillpayservice_key
+javaOpts:
+  extra:
+    - "-Djavax.net.ssl.trustStore=/opt/integration-sba/keystore-sba-prod.jks"
+    - "-Djsse.enableSNIExtension=false"
+volumes:
+  - name: sba-jks-configmap
+    configMap:
+      name: sba-jks-configmap
+volumeMounts:
+  - name: sba-jks-configmap
+    mountPath: /opt/integration-sba/keystore-sba-prod.jks
+    subPath: keystore-sba-prod.jks
+    readOnly: true
+
+ingress:
+  enabled: false
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 150
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 150

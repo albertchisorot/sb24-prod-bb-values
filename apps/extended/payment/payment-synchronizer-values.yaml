@@ -1,0 +1,16 @@
+app:
+  image:
+    tag: 2024.03.40-LTS
+  resources:
+    memory:
+      ram: 1024
+
+env:
+  # SBA_INTERNATIONAL config
+  "backbase.payments.synchronizer.payment-types.SBA_INTERNATIONAL.core-bank-route-id": payment-order-integration-service
+  "backbase.payments.synchronizer.payment-types.SBA_INTERNATIONAL.query-interval": P14D
+  "backbase.payments.synchronizer.payment-types.SBA_INTERNATIONAL.statuses": ACCEPTED, CANCELLATION_PENDING
+  # SBA_BB_INTERNATIONAL config
+  "backbase.payments.synchronizer.payment-types.SBA_BB_INTERNATIONAL.core-bank-route-id": payment-order-integration-service
+  "backbase.payments.synchronizer.payment-types.SBA_BB_INTERNATIONAL.query-interval": P14D
+  "backbase.payments.synchronizer.payment-types.SBA_BB_INTERNATIONAL.statuses": ACCEPTED, CANCELLATION_PENDING

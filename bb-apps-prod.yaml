@@ -1,0 +1,2452 @@
+env: prod
+name: bb
+region: sb24
+destinations:
+  - server: https://kubernetes.default.svc
+    namespace: newsb24
+source:
+  namespace: argo-cd
+  repositories:
+    - default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    - https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-bb-values
+    - https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+apps:
+  #SMTP-Connector
+  - name: smtp-connector
+    chart:
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/smtp-connector/smtp-conn-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/smtp-connector/smtp-conn-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  # IPS
+  - name: ips-edge
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/ips/edge-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/ips-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/ips/edge-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  # Identity
+  - name: identity
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/keystore-mount-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/identity-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: oidc-token-converter
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/oidc-token-converter-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: /apps/identity/keystore-mount-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/oidc-token-converter-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: fido
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/fido-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/fido-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: device-management
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/device-management-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/device-management-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: identity-integration
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/identity-integration-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/identity-integration-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: confirmation
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/confirmation-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/confirmation-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: enrollment-manager
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/enrollment-manager-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/enrollment-manager-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: enrollment-support-api
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/enrollment-support-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/enrollment-support-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+        
+  - name: account-recovery
+    chart:
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/account-recovery-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/account-recovery/account-recovery-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/account-recovery/account-recovery-retail-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  #Web Auth
+  - name: web-auth
+    chart:
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/web-auth-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/web-auth-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  #DBS
+  #Transactions
+  - name: transactions-manager
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/transactions/transaction-manager-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/transactions/transaction-manager-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+      # Cards
+      #cards-presentation-service
+# --------------------------- Cards Starts Here ----------------------------------------------------
+  #card-manager
+  - name: card-manager-service
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/card-manager/cards-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/card-manager/card-manager-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/card-manager/card-manager-service-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  #cardless-integration-service
+  - name: cardless-integration-service
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/card-manager/cards-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/card-manager/cardless-integration-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/card-manager/cardless-integration-service-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  #otp
+  - name: otp-service
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/otp/otp-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/otp/otp-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/otp/otp-service-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  #Provisioning
+  - name: provisioning
+    chart:
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/provisioning/provisioning-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/provisioning/provisioning-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  #self-enrollment-service
+  - name: enrollment
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/self-enrollment/self-enrollment-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/self-enrollment/self-enrollment-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/self-enrollment/self-enrollment-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  #self-enrollment-commons
+  - name: enroll-commons
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/self-enrollment/self-enrollment-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/self-enrollment/self-enrollment-commons-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/self-enrollment/self-enrollment-commons-service-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  #rating
+  - name: rating
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/rating/rating-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/rating/rating-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/rating/rating-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  #custom-reference-data
+  - name: reference-data
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/custom-reference-data/custom-reference-data-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/custom-reference-data/custom-reference-data-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/custom-reference-data/custom-reference-data-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  #ingestion
+  - name: ingestion
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/ingestion/ingestion-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/ingestion/ingestion-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/ingestion/ingestion-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  #account-statement
+  - name: statement
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/account-statement/account-statement-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/account-statement/account-statement-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/account-statement/account-statement-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  #account-integration
+  - name: statement-integration
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/account-statement/account-statement-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/account-statement/account-statement-integration-service.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/account-statement/account-statement-integration-service.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  #Custom Billpay
+  - name: custom-billpay
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/custom-billpay/custom-billpay-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/custom-billpay/custom-billpay-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  # Custom Notifications
+  - name: custom-notification
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/custom-notification/custom-notification-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/custom-notification/custom-notification-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  # Contacts
+  - name: contact-manager
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/contact/contact-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/contact/contact-manager-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/contact/contact-manager-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  #contact manager integration service
+  - name: contact-manager-integration-service
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/contact/contact-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/contact/contact-manager-integration-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/contact/contact-manager-integration-service-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+    
+  # Payment Order
+  - name: payment-order
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/payment/payment-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/payment/payment-order-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/payment/payment-order-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  # Payment Order Outbound Service
+  - name: payment-order-outbound
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/payment-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/payment/payment-order-outbound-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/payment/payment-order-outbound-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  # Payment Order Option
+  - name: payment-order-options
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/payment/payment-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/payment/payment-option-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/payment/payment-option-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  - name: payment-order-integration-service
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/payment/payment-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/payment/payment-order-integration-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/payment/payment-order-integration-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  # Payment Synchronizer
+  - name: payment-synchronizer
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/payment/payment-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/payment/payment-synchronizer-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/payment/payment-synchronizer-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  # Payment Order Commons
+  - name: payment-order-commons
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/payment-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/payment/payment-order-commons-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/payment/payment-order-commons-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  # Batch Payment
+  - name: batch-payment
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/batch-payment-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/batch-payment/batch-payment-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/batch-payment/batch-payment-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  # Batch Payment Integration Service
+  - name: batch-payment-integration
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/batch-payment-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/batch-payment/batch-payment-integration-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      #TODO: confirm additional values
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  # Arrangement Manager
+  - name: arrangement-manager
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/product-summary/product-summary-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/product-summary/arrangement-manager-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/product-summary/arrangement-manager-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  # Account Integration
+  - name: account-integration
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/product-summary/product-summary-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/product-summary/account-integration-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/product-summary/account-integration-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  # Access Control
+  - name: access-control
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/access-control-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/access-control/access-control-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/access-control/access-control-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: access-group-int
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/access-control-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/access-control/access-group-integration-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/access-control/access-group-integration-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: user-outbound
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/access-control-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/access-control/ado-user-outbound-integration-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/access-control/ado-user-outbound-integration-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: user-profile-util
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/access-control-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/access-control/ado-user-profile-util-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/access-control/ado-user-profile-util-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: legal-entity-outbound
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/access-control-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/access-control/legal-entity-integration-outbound-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/access-control/legal-entity-integration-outbound-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: legal-entity-integration
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/access-control-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/access-control/legal-entity-integration-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/access-control/legal-entity-integration-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: user-manager
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/user-manager-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/user-manager-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: user-profile-manager
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/access-control-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/access-control/user-profile-manager-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/access-control/user-profile-manager-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  # Approvals
+  - name: approvals
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/approvals/approvals-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/approvals/approvals-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  # Limits
+  - name: limits
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/limits-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/limits/limits-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/limits/limits-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  - name: exchange-integration-outbound
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/limits-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/limits/ados-exchange-integration-outbound-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/limits/ados-exchange-integration-outbound-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  #Currencies
+  - name: currencies
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/currencies-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/currencies/currencies-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/currencies/currencies-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  #Custom Loans
+  - name: custom-loans
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/custom-loans-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/custom-loans/custom-loans-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/custom-loans/custom-loans-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  #Custom Documents
+  - name: custom-documents
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/custom-documents-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/custom-documents/custom-documents-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/custom-documents/custom-documents-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  #Actions
+  # - name: actions
+  #   chart:
+  #     name: newsb24/backbase-app
+  #     version: 0.8.0
+  #     repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+  #   valueFiles:
+  #     - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-bb-values
+  #       targetRevision: master
+  #       path: apps/dbs/actions-values.yaml
+  #     - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-bb-values
+  #       targetRevision: master
+  #       path: apps/dbs/actions/actions-values.yaml
+  #     - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-bb-values
+  #       targetRevision: master
+  #       path: apps/logback-values.yaml
+  #     - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+  #       targetRevision: master
+  #       path: bb-prod-values.yaml
+  #     - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+  #       targetRevision: master
+  #       path: apps/dbs-values.yaml
+  #     - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+  #       targetRevision: master
+  #       path: apps/dbs/actions/actions-values.yaml
+  #   destination:
+  #     server: "https://kubernetes.default.svc"
+  #     namespace: newsb24
+  #   autosync: false
+  # - name: actions-integration
+  #   chart:
+  #     name: newsb24/backbase-app
+  #     version: 0.8.0
+  #     repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+  #   valueFiles:
+  #     - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-bb-values
+  #       targetRevision: master
+  #       path: apps/dbs/actions-values.yaml
+  #     - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-bb-values
+  #       targetRevision: master
+  #       path: apps/dbs/actions/actions-integration-values.yaml
+  #     - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-bb-values
+  #       targetRevision: master
+  #       path: apps/logback-values.yaml
+  #     - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+  #       targetRevision: master
+  #       path: bb-prod-values.yaml
+  #     - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+  #       targetRevision: master
+  #       path: apps/dbs-values.yaml
+  #     - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+  #       targetRevision: master
+  #       path: apps/dbs/actions/actions-integration-values.yaml
+  #   destination:
+  #     server: "https://kubernetes.default.svc"
+  #     namespace: newsb24
+  #   autosync: false
+
+  #Custom Sms Connector
+  - name: sms-connector
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/sms-connector/sms-connector-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/sms-connector/sms-connector-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  #Content-Services
+  - name: contentservices
+    chart: 
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/content-services/content-services-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/content-services/content-services-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  #Remote Config
+  - name: remote-config
+    chart:
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/remote-config/remote-config-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/remote-config/remote-config-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+
+ #Remote Config App
+  - name: remote-conf-web
+    chart:
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/remote-config/remote-config-app-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/remote-config/remote-config-app-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+
+  #Mobile Auth
+  - name: mobile-auth
+    chart:
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/mobile-auth-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/mobile-auth-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+
+  #Event Bridge
+  - name: event-bridge
+    chart:
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/event-bridge-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/event-bridge-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  #UserLifeCycle
+  - name: user-lifecycle
+    chart:
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/user-lifecycle-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/user-lifecycle-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  #Custom Event manager
+  - name: event-manager
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/event-manager/event-manager-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/event-manager/event-manager-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  #Custom Recipient manager
+  - name: recipient-manager
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/recipient-manager/recipient-manager-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/recipient-manager/recipient-manager-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+ #Retail Web App
+  - name: retail-web-app
+    chart:
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/clients/ados-web-retail-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/clients/ados-web-retail-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+ #Business Web App
+  - name: business-web-app
+    chart:
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/clients/ados-web-business-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/clients/ados-web-business-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  #Employee Web App
+  - name: employee-web-app
+    chart:
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/clients/ados-web-employee-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/clients/ados-web-employee-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: true
+
+  #Custom Bank catalog
+  - name: bank-catalog
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/bank-catalog/bank-catalog-manager-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/bank-catalog/bank-catalog-manager-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+    # Custom Communication-outbound-service
+  - name: communication-outbound-service
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/communication-outbound-service/communication-outbound-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/communication-outbound-service/communication-outbound-service-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+#beneficiary validation
+  - name: beneficiary-validation
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/contact/contact-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/contact/beneficiary-validation-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/contact/beneficiary-validation-service-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+     #beneficiary validation integration service
+  - name: beneficiary-validation-integration-service
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/contact/contact-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/extended/contact/beneficiary-validation-integration-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/extended/contact/beneficiary-validation-integration-service-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+  
+    # notifications
+  - name: notifications
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/notifications/notifications-service-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/notifications/notifications-service-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+  # Account recovery retail
+  - name: account-recovery-retail
+    chart:
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/account-recovery-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/account-recovery/account-recovery-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/account-recovery/account-recovery-retail-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+    # Account recovery business
+  - name: account-recovery-business
+    chart:
+      name: newsb24/backbase-app
+      version: 1.0.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/identity/account-recovery-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/account-recovery/account-recovery-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/identity/account-recovery/account-recovery-business-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+#------------- Foundation Service Configuration START ------------------------------------------#
+
+  - name: document-manager
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/custom/document-manager/document-manager-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom-dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/custom/document-manager/document-manager-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+
+# Push Integration
+  - name: push-integration
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/foundation-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/foundation/message-delivery/push-integration-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/foundation-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/foundation/message-delivery/push-integration-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  #Communication
+  - name: communication
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/foundation-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/foundation/message-delivery/communication-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/foundation-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/foundation/message-delivery/communication-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+
+  #Audit
+  - name: audit
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/foundation-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/foundation/audit/audit-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/foundation-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/foundation/audit/audit-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false
+#------------- Foundation Service Configuration END ------------------------------------------#
+
+  # Dashboard
+  - name: dashboard
+    chart:
+      name: newsb24/backbase-app
+      version: 0.9.0
+      repository: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com
+    valueFiles:
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/bb-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/dbs/dashboard/dashboard-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: global-bb-values/apps/logback-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: bb-prod-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs-values.yaml
+      - repository: https://tools.standardbank.co.za/bitbucket/scm/aomb/sb24-prod-bb-values
+        targetRevision: master
+        path: apps/dbs/dashboard/dashboard-values.yaml
+    destination:
+      server: "https://kubernetes.default.svc"
+      namespace: newsb24
+    autosync: false

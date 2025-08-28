@@ -1,0 +1,30 @@
+service:
+    nameOverride: "accessgroup"
+app:
+  image:
+    repository: accessgroup-integration-service
+  resources:
+    memory:
+      ram: 384
+env:
+  SPRING_CONFIG_ADDITIONAL_LOCATION: "/appconfig/application-extension.yml"
+customFilesPath: /appconfig/
+customFiles:
+  application-extension.yml: |-
+    backbase:
+      api:
+        extensions:
+          classes:
+            com.backbase.integration.accessgroup.rest.spec.v2.accessgroups.serviceagreements.ServiceAgreementPostRequestBody: additional-data
+            com.backbase.integration.accessgroup.rest.spec.v2.accessgroups.serviceagreements.ServiceAgreementPutRequestBody: additional-data
+        property-sets:
+          additional-data:
+            properties:
+            - property-name: customerId
+              type: string
+      data-group:
+        types:
+          - ARRANGEMENTS
+          - CONTACTS
+          - CUSTOMERS
+          - CUSTOM

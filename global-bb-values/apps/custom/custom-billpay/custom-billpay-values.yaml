@@ -1,0 +1,43 @@
+global:
+
+  app:
+    metadata:
+      tier: dbs
+      capability: custom-billpay
+    pullPolicy: Always
+
+  jwt:
+    enabled: true
+    existingSecret: "backbase-env-jwt"
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+
+  registry:
+    enabled: false
+
+  activemq:
+    enabled: true
+    checkEnabled: true
+
+  database:
+    enabled: false
+    type: oracle
+
+  env:
+    BUILDINGBLOCKS_SECURITY_CSRF_ENABLED: "false"
+    "spring.liquibase.enabled": "true"
+    "spring.datasource.validation-query": "SELECT 1 from dual"
+    "spring.datasource.tomcat.validation-query": "SELECT 1 from dual"
+    "spring.datasource.tomcat.max-active": "30"
+
+service:
+  nameOverride: "ados-dbs-custom-billpay-service"
+app:
+  image:
+    repository: ados-dbs-custom-billpay-service
+  resources:
+    memory:
+      ram: 2048
+
+database:
+  enabled: true

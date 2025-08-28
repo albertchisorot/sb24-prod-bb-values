@@ -1,0 +1,47 @@
+app:
+  image:
+    tag: "2024.03.24-LTS"
+  metadata:
+    public: true
+
+env: 
+  "SPRING_MAIL_PASSWORD":
+    valueFrom:        
+      secretKeyRef:          
+        name: smtp-details         
+        key: password
+  "SPRING_MAIL_USERNAME":     
+    valueFrom:        
+      secretKeyRef:          
+        name: smtp-details         
+        key: username
+  "SPRING_MAIL_HOST":     
+    valueFrom:        
+      secretKeyRef:          
+        name: smtp-details         
+        key: host  
+
+  "SPRING_AUTOCONFIGURE_EXCLUDE":
+    value: org.springframework.cloud.netflix.eureka.loadbalancer.LoadBalancerEurekaAutoConfiguration
+    
+customFiles:
+  smtp-connection-config.yml: |-
+    spring:
+      mail:
+        host: ${smtp.mail.host}
+        password: ${smtp.mail.password}
+        port: 25
+        properties:
+          mail:
+            smtp:
+              auth: false
+              starttls:
+                enable: false
+              ssl:
+                enable: false
+                checkserveridentity: false
+              socketFactory:
+                fallback: true
+            transport:
+              protocol: smtp
+        username: ${smtp.mail.username}

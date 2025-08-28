@@ -1,0 +1,35 @@
+app:
+  resources:
+    memory:
+      ram: 1024
+      containerReserve: 128
+    cpu:
+      minShares: 100
+      maxShares: 1000
+
+env:
+  "spring.cloud.loadbalancer.retry.enabled": "true"
+  "spring.cloud.stream.default.group": "communication"
+  "spring.cloud.stream.default.consumer.exchangeDurable": "true"
+  "spring.cloud.stream.default.consumer.concurrency": "1"
+  "spring.cloud.stream.default.consumer.prefetch": "1000"
+  "spring.cloud.stream.dynamicDestinations": "false"
+  "spring.cloud.stream.default-binder": "activemq"
+  "backbase.communication.channels.sms.0": "sms-low-priority"
+  "backbase.communication.channels.sms.1-6": "sms-medium-priority"
+  "backbase.communication.channels.sms.7": "sms-high-priority"
+  "spring.cloud.stream.bindings.sms-high-priority.destination": "Backbase.communication.sms-high-priority"
+  "spring.cloud.stream.bindings.sms-high-priority.group": "sms-group"
+  "spring.cloud.stream.bindings.sms-low-priority.destination": "Backbase.communication.sms-low-priority"
+  "spring.cloud.stream.bindings.sms-low-priority.group": "sms-group"
+  "spring.cloud.stream.bindings.sms-medium-priority.destination": "Backbase.communication.sms-medium-priority"
+  "spring.cloud.stream.bindings.sms-medium-priority.group": "sms-group"
+  "backbase.communication.channels.email.0": "email-low-priority"
+  "backbase.communication.channels.email.1-6": "email-medium-priority"
+  "backbase.communication.channels.email.7": "email-high-priority"
+  "spring.cloud.stream.bindings.email-high-priority.destination": "Backbase.communication.email-high-priority"
+  "spring.cloud.stream.bindings.email-high-priority.group": "email-group"
+  "spring.cloud.stream.bindings.email-low-priority.destination": "Backbase.communication.email-low-priority"
+  "spring.cloud.stream.bindings.email-low-priority.group": "email-group"
+  "spring.cloud.stream.bindings.email-medium-priority.destination": "Backbase.communication.email-medium-priority"
+  "spring.cloud.stream.bindings.email-medium-priority.group": "email-group"

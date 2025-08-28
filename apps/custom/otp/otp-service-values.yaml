@@ -1,0 +1,26 @@
+app:
+  image:
+    registry: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/newsb24
+    tag: 3.0.0-RC-SNAPSHOT
+  metadata:
+    public: "'true'"
+
+database:
+  username: adosdbsotpservice
+  existingSecret: backbase-env-database
+  existingSecretKey: otpservice_key
+javaOpts:
+  extra:
+    - "-Djavax.net.ssl.trustStore=/opt/integration-sba/keystore-sba-prod.jks"
+    - "-Djsse.enableSNIExtension=false"
+volumes:
+  - name: sba-jks-configmap
+    configMap:
+      name: sba-jks-configmap
+volumeMounts:
+  - name: sba-jks-configmap
+    mountPath: /opt/integration-sba/keystore-sba-prod.jks
+    subPath: keystore-sba-prod.jks
+    readOnly: true
+env:
+  SPRING_LIQUIBASE_ENABLED: "true"

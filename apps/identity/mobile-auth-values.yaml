@@ -1,0 +1,13 @@
+
+app:
+  metadata:
+    tier: identity
+    public: true
+
+  image:
+    registry: "repo.backbase.com/backbase-docker-releases"
+    repository: mobile-authentication
+    tag: "2024.03.39-LTS"
+    
+env:
+  "backbase.mobile-authentication.passcode.length": "6"

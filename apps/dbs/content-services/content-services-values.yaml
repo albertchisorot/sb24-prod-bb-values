@@ -1,0 +1,42 @@
+app:
+  image:
+    registry: repo.backbase.com/backbase-docker-releases
+    tag: "2024.03-LTS"
+  metadata:
+    public: "true"
+
+database:
+  enabled: true
+  username: content_services
+  existingSecret: backbase-env-database
+  existingSecretKey: contentservices_key
+
+env:
+  "contentservices.import.shared-content-rename-same-path-objects": "false"
+  "contentservices.import.shared-content-delete-if-relations-exist": "true"
+  SPRING_LIQUIBASE_ENABLED: "true"
+
+#liquibase:
+  # -- If true, configures an InitContainer to apply the Liquibase database change set on startup
+ # enabled: true
+  # -- The location of the Liquibase change log file
+ # changelogLocation: "classpath:db/changelog/db.changelog-persistence.xml"
+  # -- The SSDK main class to run to apply the Liquibase change log
+ # initMainClass: "'com.backbase.buildingblocks.auxiliaryconfig.InitContainerApplication'"
+  # -- The DB username to be used by Liquibase when applying the change set
+  # username: ""
+  # -- The DB password to be used by Liquibase when applying the change set
+  # password: ""
+  # -- List of init arguments that will be passed after `command`` section, each argument must be in ""
+ # initArgsOverride: []
+  # -- Key-value pairs representing environment variables for the Liquibase initContainer.  These will override values for env vars
+  #  specified on the main deployment (i.e. `global.env` or `env`).  See `global.env` for examples on how to set these.
+
+
+# livenessProbe:
+#   enabled: true
+#   initialDelaySeconds: 150
+
+# readinessProbe:
+#   enabled: true
+#   initialDelaySeconds: 150

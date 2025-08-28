@@ -1,0 +1,9 @@
+app:
+  resources:
+    memory:
+      ram: 1024
+
+database:
+  username: auditpersistenceservice
+  existingSecret: backbase-env-database
+  existingSecretKey: auditpersistenceservice_key

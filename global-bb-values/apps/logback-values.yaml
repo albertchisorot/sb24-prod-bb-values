@@ -1,0 +1,11 @@
+global:
+  env:
+    logging.config: "/config/logback-spring.xml"
+  volumes:
+    - name: logback-spring
+      configMap:
+        name: logging-config
+  volumeMounts:
+    - name: logback-spring
+      mountPath: /config
+      readOnly: true

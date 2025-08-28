@@ -1,0 +1,6 @@
+service:
+  nameOverride: "payment-synchronizer"
+
+app:
+  image:
+    repository: payment-synchronizer

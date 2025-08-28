@@ -1,0 +1,48 @@
+global:
+
+  app:
+    metadata:
+      tier: ips
+
+  env:
+    GATEWAY_REGISTRY_HOST: registry
+    SSO_JWT_EXTERNAL_EXPIRATION: "600"
+    SSO_JWT_EXTERNAL_NOT_VALID_AFTER: "30000"
+    SSO_JWT_EXTERNAL_RENEW: "300"
+    BUILDINGBLOCKS_SECURITY_CSRF_ENABLED: "false"
+    spring.cloud.loadbalancer.ribbon.enabled: "false"
+    spring.cloud.kubernetes.discovery.all-namespaces: "false"
+    spring.main.cloud-platform: 'KUBERNETES'
+    spring.main.cloud.kubernetes.loadbalancer.enabled: 'true'
+    spring.main.gateway.discovery.locator.include-expression: 'true'
+
+  jwt:
+    enabled: true
+    existingSecret: "backbase-env-jwt"
+    SIG_SECRET_KEY_fromSecret: true
+    GATEWAY_CSRF_ENABLED: "true"
+    EXTERNAL_SIG_SECRET_KEY_fromSecret: true
+    EXTERNAL_ENC_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+
+  registry:
+    enabled: false
+
+
+app:
+  image:
+    repository: edge
+livenessProbe:
+  enabled: true
+  path: /actuator/health
+
+readinessProbe:
+  enabled: true
+  path: /actuator/health
+
+ingress:
+  enabled: true
+
+service:
+  nameOverride: ips-edge
+  enabled: true

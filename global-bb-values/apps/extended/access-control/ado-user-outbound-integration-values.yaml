@@ -1,0 +1,8 @@
+service:
+    nameOverride: "user-outbound"
+app:
+  image:
+    repository: ados-user-outbound-integration-service
+  resources:
+    memory:
+      ram: 512

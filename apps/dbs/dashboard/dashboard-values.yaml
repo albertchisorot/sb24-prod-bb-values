@@ -1,0 +1,15 @@
+app:
+  image:
+    tag: 2024.03.40-LTS
+  resources:
+    memory:
+      ram: 1024
+
+database:
+  username: dashboard_service
+  existingSecret: backbase-env-database
+  existingSecretKey: dashboard_service
+
+
+env:
+  logging.level.org.springframework.web.client.RestTemplate: "DEBUG"

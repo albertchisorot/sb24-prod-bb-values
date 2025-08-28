@@ -1,0 +1,10 @@
+service:
+  nameOverride: "otp-service"
+app:
+  image:
+    repository: ados-dbs-otp-service
+  resources:
+    memory:
+      ram: 512
+database:
+  enabled: true

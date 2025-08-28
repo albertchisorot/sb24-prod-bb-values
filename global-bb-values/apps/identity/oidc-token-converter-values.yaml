@@ -1,0 +1,17 @@
+service:
+  nameOverride: "token-converter"
+app:
+  image:
+    repository: ados-token-enhancer
+  resources:
+    memory:
+      ram: 1024
+
+env:
+  SSO_JWT_EXTERNAL_EXPIRATION: "600"
+  SSO_JWT_EXTERNAL_NOT_VALID_AFTER: "30000"
+  SSO_JWT_EXTERNAL_RENEW: "300"
+
+database:
+  enabled: false
+  checkEnabled: false

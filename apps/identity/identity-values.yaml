@@ -1,0 +1,83 @@
+app:
+  image:
+    registry: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/newsb24
+    tag: 3.0.0-RC-SNAPSHOT
+    pullPolicy: Always
+database:
+  username: backbase_identity
+  existingSecret: backbase-env-database
+  existingSecretKey: backbaseidentity_key
+env:
+  KEYCLOAK_HOSTNAME_DEFAULT_PROVIDER: "default"
+  KEYCLOAK_HOSTNAME_DEFAULT_FRONTENDURL: "beta.sb24identity.standardbank.co.ao/auth"
+  KEYCLOAK_FRONTEND_URL: "https://beta.sb24identity.standardbank.co.ao/auth"
+  KEYCLOAK_HOSTNAME_DEFAULT_FORCEBACKENDURLTOFRONTENDURL: "false"
+  QUARKUS_HTTP_PROXY_ADDRESS_FORWARDING: "true"
+  QUARKUS_LOG_LEVEL: "INFO"
+  KEYCLOAK_CONNECTIONSJPA_QUARKUS_ENABLED: "true"
+  KEYCLOAK_CONNECTIONSJPA_QUARKUS_INITIALIZEEMPTY: "false"
+  KEYCLOAK_CONNECTIONSJPA_QUARKUS_MIGRATIONSTRATEGY: "none"
+  KC_SPI_CONFIRMATION_SERVICE_CLIENT_DEFAULT_URL: "http://confirmation:8080"
+  SBA_SELFENROLLMENT_URL: "https://beta.sb24.standardbank.co.ao/sba-retail-web/{locale}/enrollment"
+  SBA_RETAIL_PASSWORD_RESET_URL: "https://beta.sb24.standardbank.co.ao/sba-retail-web/{locale}/password-reset"
+  SBA_BUSINESS_PASSWORD_RESET_URL: "https://beta.sb24.standardbank.co.ao/sba-business-web/{locale}/password-reset"
+  SBA_ONBOARDING_URL: "https://beta.sb24.standardbank.co.ao/sba-retail-web/onboarding#/intro?kc_locale="
+  CXP_HOST_URL: "https://beta.sb24.standardbank.co.ao"
+  keycloak.backbase.event-listeners.user-identity.endpoint: "/service-api/v1/users/externalId/{externalId}/identities"
+  keycloak.backbase.event-listeners.user-identity.integrationServiceUrl: "http://user-manager:8080"
+  jgroups.k8s.namespace: "sb24prod"
+  quarkus.jaeger.service-name: "prod-backbase-identity"
+  KC_HOSTNAME: "beta.sb24identity.standardbank.co.ao"
+  KC_HOSTNAME_ADMIN_URL: "https://beta.sb24identity.standardbank.co.ao/auth"
+  KC_HOSTNAME_STRICT_HTTPS: "true"
+  KC_HTTP_ENABLED: "false"
+  KC_HTTPS_ENABLED: "true"
+  KC_HTTPS_PORT: "443"
+  KC_DB_URL_DATABASE: "BACKBASE_IDENTITY"
+  KC_SPI_WEB_AUTHENTICATION_SERVICE_CLIENT_DEFAULT_URL: "http://web-authentication:8080"
+  KC_SPI_DEVICE_MANAGEMENT_SERVICE_CLIENT_DEFAULT_URL: "http://device-management-service:8080"
+  KC_SPI_EVENTS_LISTENER_EVENT_BRIDGE_AUDIT_URL: "http://event-bridge:8080"
+  BACKBASE_HTTP_CORS_ORIGINS: "*"
+  BACKBASE_HTTP_CORS_HEADERS: "X-User-Context,X-App-Version,X-Convert-Redirects"
+  BACKBASE_HTTP_CORS_EXPOSED_HEADERS: "Location"
+
+  #Configure the Identity Mobile SDK OTP authenticator in the Auth Server
+  "kc.spi-authenticator-mobile-sdk-otp-communications-service-endpoint": "http://communication-outbound-service:8080/service-api/v1/communications/batches"
+  "kc.spi-authenticator-mobile-sdk-otp-otp-channels-0-key": "email"
+  "kc.spi-authenticator-mobile-sdk-otp-otp-channels-0-channel": "email"
+  "kc.spi-authenticator-mobile-sdk-otp-otp-channels-0-from": "admin@identity.bb"
+  "kc.spi-authenticator-mobile-sdk-otp-otp-channels-0-identity-attributes-name": "emailAddress"
+  "kc.spi-authenticator-mobile-sdk-otp-otp-channels-0-identity-attributes-id": "1"
+  "kc.spi-authenticator-mobile-sdk-otp-otp-channels-0-masking-type": "email"
+  "kc.spi-authenticator-mobile-sdk-otp-otp-channels-0-leading-number-unmasked": "5"
+  "kc.spi-authenticator-mobile-sdk-otp-otp-channels-1-key": "text"
+  "kc.spi-authenticator-mobile-sdk-otp-otp-channels-1-channel": "text"
+  "kc.spi-authenticator-mobile-sdk-otp-otp-channels-1-from": "447291882716"
+  "kc.spi-authenticator-mobile-sdk-otp-otp-channels-1-identity-attributes-id": "2"
+  "kc.spi-authenticator-mobile-sdk-otp-otp-channels-1-identity-attributes-name": "mobileNumber"
+  "kc.spi-authenticator-mobile-sdk-otp-otp-channels-1-masking-type": "phone"
+  "kc.spi-authenticator-mobile-sdk-otp-otp-channels-1-leading-number-unmasked": "6"
+  
+  # STEP UP-AUTHENTICATION CONFIGURATION FOR MOBILE
+  KC_SPI_STEP_UP_CONFIG_DEFAULT_SBAPB_NAME: "sbapb"
+  KC_SPI_STEP_UP_CONFIG_DEFAULT_SBAPB_CLIENTS_MOBILE_NAME: "sba-retail-mobile"
+  KC_SPI_STEP_UP_CONFIG_DEFAULT_SBAPB_CLIENTS_MOBILE_ACR_VALUES_CHANGEPWD_ACR: "step_up"
+  KC_SPI_STEP_UP_CONFIG_DEFAULT_SBAPB_CLIENTS_MOBILE_ACR_VALUES_CHANGEPWD_PRIORITY: "1"
+  KC_SPI_STEP_UP_CONFIG_DEFAULT_SBAPB_CLIENTS_MOBILE_ACR_VALUES_CHANGEPWD_PERMISSIBLE_SINGLE: "bb-su:change-pwd"
+  KC_SPI_STEP_UP_CONFIG_DEFAULT_SBAPB_CLIENTS_WEB_NAME: "sba-retail-web"
+  KC_SPI_STEP_UP_CONFIG_DEFAULT_SBAPB_CLIENTS_WEB_ACR_VALUES_CHANGEPWD_ACR: "step_up"
+  KC_SPI_STEP_UP_CONFIG_DEFAULT_SBAPB_CLIENTS_WEB_ACR_VALUES_CHANGEPWD_PRIORITY: "2"
+  KC_SPI_STEP_UP_CONFIG_DEFAULT_SBAPB_CLIENTS_WEB_ACR_VALUES_CHANGEPWD_PERMISSIBLE_SINGLE: "bb-su:change-pwd"
+  KC_SPI_STEP_UP_CONFIG_DEFAULT_SBABUSINESS_NAME: "sbabusiness"
+  KC_SPI_STEP_UP_CONFIG_DEFAULT_SBABUSINESS_CLIENTS_WEB_NAME: "sba-business-web"
+  KC_SPI_STEP_UP_CONFIG_DEFAULT_SBABUSINESS_CLIENTS_WEB_ACR_VALUES_CHANGEPWD_ACR: "step_up"
+  KC_SPI_STEP_UP_CONFIG_DEFAULT_SBABUSINESS_CLIENTS_WEB_ACR_VALUES_CHANGEPWD_PRIORITY: "2"
+  KC_SPI_STEP_UP_CONFIG_DEFAULT_SBABUSINESS_CLIENTS_WEB_ACR_VALUES_CHANGEPWD_PERMISSIBLE_SINGLE: "bb-su:change-pwd"
+
+  #Configuration for Transaction Signing
+  KC_SPI_CONTENT_SERVICE_CLIENT_DEFAULT_URL: "http://contentservices:8080"
+  KC_SPI_BACKBASE_ACR_CLAIM_DENY_VALUE: "bb:deny"
+
+
+ingress:
+  enabled: false

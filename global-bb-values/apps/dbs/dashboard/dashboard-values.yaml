@@ -1,0 +1,21 @@
+service:
+  nameOverride: "dashboard"
+
+app:
+  image:
+    repository: dashboard
+
+database:
+  enabled: true
+
+
+jwt:
+  enabled: true
+  existingSecret: "backbase-env-jwt"
+  SIG_SECRET_KEY_fromSecret: true
+  USERCTX_KEY_fromSecret: true
+
+env:
+  SPRING_LIQUIBASE_ENABLED: "true"
+  SPRING_AUTOCONFIGURE_EXCLUDE: "org.springframework.cloud.stream.function.FunctionConfiguration"
+

@@ -1,0 +1,67 @@
+global:
+  app:
+    metadata:
+      tier: dbs
+      capability: payments
+      public: true
+    image:
+      registry: ""
+      # This tag is chosen as a collection of services that work together. All services have SemVer versioned docker tags.
+      # This tag is a re-tag of such a version.
+      tag: ""
+  # This service requires the JWT to be present. In this case it will be gotten from the backbase-env chart which provides these secrets.
+  jwt:
+    enabled: true
+    existingSecret: "backbase-env-jwt"
+    SIG_SECRET_KEY_fromSecret: true
+    USERCTX_KEY_fromSecret: true
+  # This service depends on activemq. This service also should not be booted until the activemq is booted ( checkEnabled: true )
+  activemq:
+    enabled: true
+    checkEnabled: true
+  # Some Payment services depend on an active SQL instance. These services should specify the database.sid value for a link to the table name.
+  # As an addition those services will also have to enable the database by setting database.enabled to true.
+  database:
+    enabled: false
+    type: mysql
+    existingSecret: backbase-env-mysql
+    checkEnabled: true
+  # Eureka should be disabled for kubernetes deployments as per Helm Charts guideline.
+  registry:
+    enabled: false
+  # enable kubernetes liveness probe
+  livenessProbe:
+    enabled: true
+  # enable kubernetes readiness probe
+  readinessProbe:
+    enabled: true
+
+  env:
+    # CSRF is disabled by default inside our test-capabilities. On production systems it's important to have this protection enabled.
+    # See https://community.backbase.com/documentation/platform-services/latest/csrf_protection
+    BUILDINGBLOCKS_SECURITY_CSRF_ENABLED: "true"
+    EUREKA_CLIENT_ENABLED: "false"
+    SPRING_CLOUD_KUBERNETES_ENABLED: "true"
+    SPRING_CLOUD_KUBERNETES_RELOAD_ENABLED: "true"
+    SPRING_CLOUD_LOADBALANCER_RIBBON_ENABLED: "false"
+    SPRING_AUTOCONFIGURE_EXCLUDE: "org.springframework.cloud.netflix.eureka.loadbalancer.LoadBalancerEurekaAutoConfiguration"
+
+app:
+  name: paymentorderoptions
+  image:
+    repository: payment-order-options
+service:
+  enabled: true
+  nameOverride: payment-order-options
+
+# -- ${service}.volumes Adds an emptyDir volume called the tmp-dir.
+volumes:
+  - name: tmp-dir
+    emptyDir: {}
+# -- ${service}.volumeMounts Mounts the temp-dir to the /tmp
+volumeMounts:
+  - mountPath: /tmp
+    name: tmp-dir
+securityContext:
+  # -- ${service}.securityContext.readOnlyRootFilesystem if enabled applies read Only Root Filesystem security context to container
+  readOnlyRootFilesystem: true

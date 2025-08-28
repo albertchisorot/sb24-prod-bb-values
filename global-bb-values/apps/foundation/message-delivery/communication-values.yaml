@@ -1,0 +1,17 @@
+service:
+  nameOverride: "communication"
+
+app:
+  image:
+    repository: communication
+
+securityContext:
+  readOnlyRootFilesystem: true
+
+volumes:
+  - name: tmp-dir
+    emptyDir: { }
+
+volumeMounts:
+  - name: tmp-dir
+    mountPath: /tmp

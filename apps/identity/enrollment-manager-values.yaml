@@ -1,0 +1,15 @@
+app:
+  image:
+    tag: 2024.03.40-LTS
+    pullPolicy: Always
+
+database:
+  username: self_enrollment_service
+  existingSecret: backbase-env-database
+  existingSecretKey: self_enrollment_service
+
+env:
+  "backbase.enrollment-manager.workflow.defaults.config.realm": "sbapb"
+  "backbase.enrollment-manager.workflow.defaults.config.password-redirect.url": "https://beta.sb24identity.standardbank.co.ao/realms/sbapb/protocol/openid-connect/auth?client_id=self-enrollment&response_type=code&scope=openid"
+  "backbase.enrollment-manager.workflow.defaults.config.password.redirect.identity-server-url": "https://beta.sb24identity.standardbank.co.ao/auth"
+  "backbase.enrollment-manager.workflow.defaults.config.completion-url": "https://beta.sb24identity.standardbank.co.ao/sba-retail-web/pt/enrollment/:enrollmentId/check-status"

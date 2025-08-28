@@ -1,0 +1,6 @@
+service:
+  nameOverride: "account-recovery-business-manager"
+
+env:
+  backbase.account-recovery-manager.workflow.defaults.config.completion-url: "https://beta.sb24.standardbank.co.ao/sba-business-web/pt/password-reset/:workItemId/complete"
+  backbase.account-recovery-manager.workflow.defaults.config.realm: "sbabusiness"

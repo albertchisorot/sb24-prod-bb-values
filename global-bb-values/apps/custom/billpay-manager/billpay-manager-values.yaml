@@ -1,0 +1,28 @@
+service:
+  nameOverride: "billpay-manager"
+
+app:
+  image:
+    repository: billpay-manager-service
+
+ingress:
+  enabled: false
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 150
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 150
+
+activemq:
+  enabled: true
+
+database:
+  enabled: false
+
+jwt:
+  enabled: true
+  SIG_SECRET_KEY_fromSecret: true
+  USERCTX_KEY_fromSecret: true

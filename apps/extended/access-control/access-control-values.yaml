@@ -1,0 +1,17 @@
+app:
+  image:
+    registry: default-route-openshift-image-registry.apps.cluster-apps-prd.ao.sbicdirectory.com/newsb24
+    tag: 3.0.0-RC-SNAPSHOT
+service:
+  enabled: true
+
+database:
+  username: access_control_pandp_service
+  existingSecret: backbase-env-database
+  existingSecretKey: accesscontrolpandpservice_key
+
+env:
+  "spring.jpa.show-sql": "false"
+  SPRING_LIQUIBASE_ENABLED: "false"
+  BACKBASE_APPROVAL_LEVEL_ENABLED: "true"
+  BACKBASE_APPROVAL_VALIDATION_ENABLED: "true"

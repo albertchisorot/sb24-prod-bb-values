@@ -1,0 +1,20 @@
+service:
+  nameOverride: "identity-integration-service"
+
+app:
+  image:
+    repository: identity-integration-service
+  resources:
+    memory:
+      ram: 1024
+
+env:
+  IDENTITY_SERVERURL: "http://{{.Release.Name}}-backbaseidentity:8080/auth"
+
+activemq:
+  enabled: true
+  checkEnabled: true
+
+database:
+  enabled: false
+  checkEnabled: false

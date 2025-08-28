@@ -1,0 +1,3 @@
+env:
+  backbase.account-recovery-manager.workflow.defaults.config.completion-url: "https://beta.sb24.standardbank.co.ao/sba-retail-web/pt/password-reset/:workItemId/complete"
+  backbase.account-recovery-manager.workflow.defaults.config.realm: "sbapb"

@@ -1,0 +1,28 @@
+app:
+  image:
+    tag: 3.0.0-RC-SNAPSHOT
+
+javaOpts:
+  extra:
+    - "-Djavax.net.ssl.trustStore=/etc/ssl/java/certs/cacerts"
+    - "-Djavax.net.ssl.trustStorePassword=changeit"
+
+volumes:
+  - name: sba-jks-configmap
+    configMap:
+      name: sba-jks-configmap
+volumeMounts:
+  - name: sba-jks-configmap
+    mountPath: /etc/ssl/java/certs/cacerts
+    subPath: cacerts
+    readOnly: true
+
+env:
+  logging.level.org.springframework.web.client.RestTemplate: "DEBUG"
+  logging.level.ao.co.standardbank: "DEBUG"
+  SBA_CORE_SCHEME: "https"
+  SBA_CORE_HOST: "sba-api-in.ao.sbicdirectory.com/ados"
+  SBA_CORE_IBMCLIENTID: "276ee69ac181f050b31614ae2f6d9ed4"
+  SBA_CORE_CLIENTID:  "276ee69ac181f050b31614ae2f6d9ed4"
+  SBA_CORE_CLIENTSECRET:  "e3da37aa1cce6f819a565a669c21ea52"
+  SBA_CORE_ROUTE_ACCOUNTS: "v1/accounts"
